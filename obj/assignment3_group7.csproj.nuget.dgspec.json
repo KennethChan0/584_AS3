@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/kennethchan/Documents/QUT/IFN584/Assignment3/assignment3_group7/assignment3_group7.csproj": {}
+    "/Users/kennethchan/Documents/QUT/IFN584/Assignment3_group7/assignment3_group7.csproj": {}
   },
   "projects": {
-    "/Users/kennethchan/Documents/QUT/IFN584/Assignment3/assignment3_group7/assignment3_group7.csproj": {
+    "/Users/kennethchan/Documents/QUT/IFN584/Assignment3_group7/assignment3_group7.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/kennethchan/Documents/QUT/IFN584/Assignment3/assignment3_group7/assignment3_group7.csproj",
+        "projectUniqueName": "/Users/kennethchan/Documents/QUT/IFN584/Assignment3_group7/assignment3_group7.csproj",
         "projectName": "assignment3_group7",
-        "projectPath": "/Users/kennethchan/Documents/QUT/IFN584/Assignment3/assignment3_group7/assignment3_group7.csproj",
+        "projectPath": "/Users/kennethchan/Documents/QUT/IFN584/Assignment3_group7/assignment3_group7.csproj",
         "packagesPath": "/Users/kennethchan/.nuget/packages/",
-        "outputPath": "/Users/kennethchan/Documents/QUT/IFN584/Assignment3/assignment3_group7/obj/",
+        "outputPath": "/Users/kennethchan/Documents/QUT/IFN584/Assignment3_group7/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/kennethchan/.nuget/NuGet/NuGet.Config"
