@@ -11,7 +11,7 @@ public class Move
         Col = col;
         Row = row;
         Stone = stone;
-        Player = player;
+        this.player = player;
     }
 }
 
