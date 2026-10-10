@@ -20,26 +20,26 @@ public class ReversiFactory : IGameFactory
                 break;
 
             case "HvC Dumb":
-                players.Add(new ComputerPlayer("Computer", 2, new DumbStrategy()));
+                players.Add(new ComputerPlayer("Computer", 2, new DumbReversiStrategy()));
                 break;
 
             case "HvC Smart":
-                ReversiSmartStrategy strategy;
+                SmartReversiStrategy strategy;
                 switch (variant)
                 {
                     case "standard":
                         // flip as many as possible
-                        strategy = new ReversiSmartStrategy(flip: 1, corner: 0);
+                        strategy = new SmartReversiStrategy(flip: 1, corner: 0);
                         break;
 
                     case "anti":
                         // flip as few as possible, avoid corners, take a corner only if no other move
-                        strategy = new ReversiSmartStrategy(flip: -1, corner: -1);
+                        strategy = new SmartReversiStrategy(flip: -1, corner: -1);
                         break;
 
                     case "corner":
                         // take a corner whenever possible, otherwise flip the most disks
-                        strategy = new ReversiSmartStrategy(flip: 1, corner: 1);
+                        strategy = new SmartReversiStrategy(flip: 1, corner: 1);
                         break;
                     
                     default:
