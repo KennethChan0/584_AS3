@@ -4,5 +4,5 @@ public interface IGameFactory
 
     List<Player> CreatePlayer(string mode, string variant);
 
-    Game CreateGame(string variant, Board board, List<Player> players);
+    IGame CreateGame(string variant, Board board, List<Player> players);
 }

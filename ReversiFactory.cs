@@ -10,17 +10,17 @@ public class ReversiFactory : IGameFactory
     {
         var players = new List<Player>
         {
-            new HumanPlayer("Player 1", 'X')
+            new HumanPlayer("Player 1", 1)
         };
 
         switch (mode)
         {
             case "HvH":
-                players.Add(new HumanPlayer("Player 2", 'O'));
+                players.Add(new HumanPlayer("Player 2", 2));
                 break;
 
             case "HvC Dumb":
-                players.Add(new ComputerPlayer("Computer", 'O', new DumbStrategy()));
+                players.Add(new ComputerPlayer("Computer", 2, new DumbStrategy()));
                 break;
 
             case "HvC Smart":
@@ -45,7 +45,7 @@ public class ReversiFactory : IGameFactory
                     default:
                         throw new ArgumentException($"Unknown Reversi variant '{variant}'. Use standard, anti or corner.", nameof(variant));
                 }
-                players.Add(new ComputerPlayer("Computer", 'O', strategy));
+                players.Add(new ComputerPlayer("Computer", 2, strategy));
                 break;
 
             default:
@@ -55,7 +55,7 @@ public class ReversiFactory : IGameFactory
         return players;
     }
 
-    public Game CreateGame(string variant, Board board, List<Player> players)
+    public IGame CreateGame(string variant, Board board, List<Player> players)
     {
         switch (variant)
         {

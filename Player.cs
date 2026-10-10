@@ -20,7 +20,7 @@ public class ComputerPlayer : Player
     {
         this.strategy = strategy;
     }
-    public Move GetMove(Game game)
+    public Move GetMove(IGame game)
     {
         return strategy.chooseMove(game);
     }
