@@ -10,21 +10,21 @@ public class GomokuFactory : IGameFactory
     {
         var players = new List<Player>
         {
-            new HumanPlayer("Player 1", 'X')
+            new HumanPlayer("Player 1", 1)
         };
 
         switch (mode)
         {
             case "HvH":
-                players.Add(new HumanPlayer("Player 2", 'O'));
+                players.Add(new HumanPlayer("Player 2", 2));
                 break;
 
             case "HvC Dumb":
-                players.Add(new ComputerPlayer("Computer", 'O', new DumbStrategy()));
+                players.Add(new ComputerPlayer("Computer", 2, new DumbGomokuStrategy()));
                 break;
 
             case "HvC Smart":
-                players.Add(new ComputerPlayer("Computer", 'O', new GomokuSmartStrategy()));
+                players.Add(new ComputerPlayer("Computer", 2, new SmartGomokuStrategy()));
                 break;
 
             default:

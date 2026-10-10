@@ -1,8 +1,3 @@
-public interface IAiStrategy
-{
-    public Move chooseMove(Game game);
-}
-
 public class SmartGomokuStrategy : IAiStrategy
 {
     public Move chooseMove(Game game)

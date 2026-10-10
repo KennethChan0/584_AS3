@@ -4,23 +4,33 @@ using System.Runtime.CompilerServices;
 public abstract class Player
 {
     public int Id { get; }
-    public Player(int id)
+    public string Name {get;}
+    public Player(string name, int id)
     {
+        Name = name;
         Id = id;
     }
 
 }
 
-public class Computer : Player
+public class ComputerPlayer : Player
 {
     private readonly IAiStrategy strategy;
-    public Computer(int id, IAiStrategy strategy) : base(id)
+    public ComputerPlayer(string name, int id, IAiStrategy strategy) : base(name,id)
     {
         this.strategy = strategy;
     }
     public Move GetMove(Game game)
     {
         return strategy.chooseMove(game);
+    }
+}
+
+public class HumanPlayer:Player
+{
+    public HumanPlayer(string name,int id) : base(name,id)
+    {
+        
     }
 }
 
