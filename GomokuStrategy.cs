@@ -1,6 +1,6 @@
 public class SmartGomokuStrategy : IAiStrategy
 {
-    public Move chooseMove(Game game)
+    public Move chooseMove(IGame game)
     {
         Board board = game.Board;
         Player computer = game.CurrentPlayer;
@@ -256,7 +256,7 @@ public class SmartGomokuStrategy : IAiStrategy
 
 public class DumbGomokuStrategy : IAiStrategy
 {
-    public Move chooseMove(Game game)
+    public Move chooseMove(IGame game)
     {
         Board board = game.Board;
         int[,] cells = board.GetCells();

@@ -34,7 +34,7 @@ public class GomokuFactory : IGameFactory
         return players;
     }
 
-    public Game CreateGame(string variant, Board board, List<Player> players)
+    public IGame CreateGame(string variant, Board board, List<Player> players)
     {
         switch (variant)
         {
