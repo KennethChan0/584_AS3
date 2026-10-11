@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 
+using System.Collections.Generic;
+
 public class Classic : Gomoku
 {
     public override string Name => "Classic Gomoku";
@@ -11,12 +13,12 @@ public class Classic : Gomoku
 
     public override bool ValidateMove(Move move)
     {
-        throw new System.NotImplementedException();
+        return Board.IsCellEmpty(move.Row, move.Col);
     }
 
     public override void ExecuteMove(Move move)
     {
-        throw new System.NotImplementedException();
+        Board.SetCell(move.Row, move.Col, move.Stone);
     }
 
     public override void UndoMove(Move move)
@@ -36,12 +38,32 @@ public class Classic : Gomoku
 
     public override List<Move> GetPossibleMove(Player player)
     {
-        throw new System.NotImplementedException();
+        List<Move> moves = new List<Move>();
+
+        for (int row = 1; row <= Board.Rows; row++)
+        {
+            for (int col = 1; col <= Board.Columns; col++)
+            {
+                if (Board.IsCellEmpty(row, col))
+                {
+                    Move move = new Move(
+                        row,
+                        col,
+                        player.Symbol,
+                        player
+                    );
+
+                    moves.Add(move);
+                }
+            }
+        }
+
+        return moves;
     }
 
     public override void DisplayBoard(Player viewer)
     {
-        throw new System.NotImplementedException();
+        Board.Display();
     }
 
     public override string GetGameInfo()

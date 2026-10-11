@@ -10,6 +10,7 @@ public abstract class Gomoku : IGame
     public Player CurrentPlayer { get; protected set; }
     public bool IsOver { get; protected set; }
     public Player? Winner { get; protected set; }
+    protected Move? LastMove { get; set; }
 
     protected Gomoku(Board board, List<Player> players)
     {
