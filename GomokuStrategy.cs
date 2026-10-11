@@ -1,79 +1,81 @@
+using System.Reflection.Metadata;
+
 public class SmartGomokuStrategy : IAiStrategy
 {
-    public Move chooseMove(IGame game)
+    public Move ChooseMove(IGame game)
     {
-        Board board = game.Board;
-        Player computer = game.CurrentPlayer;
-        int opponentId;
-
-        int computerId = computer.Id;
-
-        if (computerId == 1)
+        if (game is Gomoku gomoku)
         {
-            opponentId = 2;
-        }
-        else
-        {
-            opponentId = 1;
-        }
+            Board board = gomoku.Board;
+            Player computer = gomoku.CurrentPlayer;
+            int opponentId;
 
-        int[,] cells = board.GetCells();
+            int computerId = computer.Id;
 
-        // Find out my possible 5-in-row, 4-in-row, 3-in-roow... and line up
-        for (int target = 5; target >= 2; target--)
-        {
-            for (int row = 0; row < board.Size; row++)
+            if (computerId == 1)
             {
-                for (int col = 0; col < board.Size; col++)
+                opponentId = 2;
+            }
+            else
+            {
+                opponentId = 1;
+            }
+
+
+            // Find out my possible 5-in-row, 4-in-row, 3-in-roow... and line up
+            for (int target = 5; target >= 2; target--)
+            {
+                for (int row = 0; row < board.Size; row++)
                 {
-                    int cellValue = cells[row, col];
-                    if (cellValue == 0)
+                    for (int col = 0; col < board.Size; col++)
                     {
-                        if (FindLongestLine(cells, row, col, computerId, target))
+                        if (board.GetCell(row, col) == 0)
                         {
-                            return new Move(row + 1, col + 1, 'O', computer);
+                            if (FindLongestLine(board, row, col, computerId, target))
+                            {
+                                return new Move(row + 1, col + 1, 'O', computer);
+                            }
+                        }
+                    }
+                }
+                // Find out opponent possible 5-in-row, 4-in-row, 3-in-roow... and block it
+                for (int row = 0; row < board.Size; row++)
+                {
+                    for (int col = 0; col < board.Size; col++)
+                    {
+                        if (board.GetCell(row, col) == 0)
+                        {
+                            if (FindLongestLine(board, row, col, opponentId, target))
+                            {
+                                return new Move(row + 1, col + 1, 'O', computer);
+                            }
                         }
                     }
                 }
             }
-        // Find out opponent possible 5-in-row, 4-in-row, 3-in-roow... and block it
+
+            //find random possible place if cannot find any 2 in row 
+            List<Move> possibleMoves = new List<Move>();
+
             for (int row = 0; row < board.Size; row++)
             {
                 for (int col = 0; col < board.Size; col++)
                 {
-                    int cellValue = cells[row, col];
-                    if (cellValue == 0)
+                    if (board.GetCell(row, col) == 0)
                     {
-                        if (FindLongestLine(cells, row, col, opponentId, target))
-                        {
-                            return new Move(row + 1, col + 1, 'O', computer);
-                        }
+                        possibleMoves.Add(new Move(row + 1, col + 1, 'O', computer));
                     }
                 }
             }
+
+            if (possibleMoves.Count == 0)
+                throw new Exception("No empty cells");
+
+            Random rand = new Random();
+            int index = rand.Next(0, possibleMoves.Count);
+            return possibleMoves[index];
         }
-
-        //find random possible place if cannot find any 2 in row 
-        List<Move> possibleMoves = new List<Move>();
-
-        for (int row = 0; row < board.Size; row++)
-        {
-            for (int col = 0; col < board.Size; col++)
-            {
-                if (cells[row, col] == 0)
-                {
-                       possibleMoves.Add(new Move(row+1,col+1,'O',computer));
-                }
-            }
-        }
-
-        if(possibleMoves.Count ==0)
-            throw new Exception ("No empty cells");
-
-        Random rand = new Random();
-        int index = rand.Next(0,possibleMoves.Count);
-        return possibleMoves[index];
-
+        throw new Exception("This only supports Gomoku");
     }
 
 
@@ -93,24 +95,24 @@ public class SmartGomokuStrategy : IAiStrategy
     }
 
     //combining all winning  methods
-    private bool FindLongestLine(int[,] cells, int row, int col, int playerId, int target)
+    private bool FindLongestLine(Board board, int row, int col, int playerId, int target)
     {
-        if (CheckHorizontal(cells, row, col, playerId, target) == true)
+        if (CheckHorizontal(board, row, col, playerId, target) == true)
         {
             return true;
         }
 
-        if (CheckVertical(cells, row, col, playerId, target))
+        if (CheckVertical(board, row, col, playerId, target))
         {
             return true;
         }
 
-        if (CheckDiagonal1(cells, row, col, playerId, target) == true)
+        if (CheckDiagonal1(board, row, col, playerId, target) == true)
         {
             return true;
         }
 
-        if (CheckDiagonal2(cells, row, col, playerId, target))
+        if (CheckDiagonal2(board, row, col, playerId, target))
         {
             return true;
         }
@@ -119,14 +121,14 @@ public class SmartGomokuStrategy : IAiStrategy
     }
 
     //check horizontal win
-    private bool CheckHorizontal(int[,] cells, int row, int col, int playerId, int target)
+    private bool CheckHorizontal(Board board, int row, int col, int playerId, int target)
     {
         int count = 1;
 
 
-        for (int i = col + 1; i < cells.GetLength(1); i++)
+        for (int i = col + 1; i < board.Size; i++)
         {
-            if (PlayerStone(cells[row, i], playerId))
+            if (PlayerStone(board.GetCell(row, i), playerId))
             {
                 count += 1;
             }
@@ -138,7 +140,7 @@ public class SmartGomokuStrategy : IAiStrategy
 
         for (int i = col - 1; i >= 0; i--)
         {
-            if (PlayerStone(cells[row, i], playerId))
+            if (PlayerStone(board.GetCell(row, i), playerId))
             {
                 count += 1;
             }
@@ -152,14 +154,14 @@ public class SmartGomokuStrategy : IAiStrategy
     }
 
     //check vertical win
-    private bool CheckVertical(int[,] cells, int row, int col, int playerId, int target)
+    private bool CheckVertical(Board board, int row, int col, int playerId, int target)
     {
         int count = 1;
 
 
-        for (int i = row + 1; i < cells.GetLength(0); i++)
+        for (int i = row + 1; i < board.Size; i++)
         {
-            if (PlayerStone(cells[i, col], playerId))
+            if (PlayerStone(board.GetCell(i, col), playerId))
             {
                 count += 1;
             }
@@ -171,7 +173,7 @@ public class SmartGomokuStrategy : IAiStrategy
 
         for (int i = row - 1; i >= 0; i--)
         {
-            if (PlayerStone(cells[i, col], playerId))
+            if (PlayerStone(board.GetCell(i, col), playerId))
             {
                 count += 1;
             }
@@ -185,14 +187,14 @@ public class SmartGomokuStrategy : IAiStrategy
     }
 
     //check backslash win \
-    private bool CheckDiagonal1(int[,] cells, int row, int col, int playerId, int target)
+    private bool CheckDiagonal1(Board board, int row, int col, int playerId, int target)
     {
         int count = 1;
 
-        for (int i = row + 1, j = col + 1; i < cells.GetLength(0) && j < cells.GetLength(1); i++, j++)
+        for (int i = row + 1, j = col + 1; i < board.Size && j < board.Size; i++, j++)
         {
 
-            if (PlayerStone(cells[i, j], playerId))
+            if (PlayerStone(board.GetCell(i, j), playerId))
             {
                 count += 1;
             }
@@ -205,7 +207,7 @@ public class SmartGomokuStrategy : IAiStrategy
         for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--)
         {
 
-            if (PlayerStone(cells[i, j], playerId))
+            if (PlayerStone(board.GetCell(i, j), playerId))
             {
                 count += 1;
             }
@@ -219,15 +221,15 @@ public class SmartGomokuStrategy : IAiStrategy
     }
 
     //check slash win /
-    private bool CheckDiagonal2(int[,] cells, int row, int col, int playerId, int target)
+    private bool CheckDiagonal2(Board board, int row, int col, int playerId, int target)
     {
 
         int count = 1;
 
-        for (int i = row + 1, j = col - 1; i < cells.GetLength(0) && j >= 0; i++, j--)
+        for (int i = row + 1, j = col - 1; i < board.Size && j >= 0; i++, j--)
         {
 
-            if (PlayerStone(cells[i, j], playerId))
+            if (PlayerStone(board.GetCell(i, j), playerId))
             {
                 count += 1;
             }
@@ -237,10 +239,10 @@ public class SmartGomokuStrategy : IAiStrategy
             }
         }
 
-        for (int i = row - 1, j = col + 1; i >= 0 && j < cells.GetLength(1); i--, j++)
+        for (int i = row - 1, j = col + 1; i >= 0 && j < board.Size; i--, j++)
         {
 
-            if (PlayerStone(cells[i, j], playerId))
+            if (PlayerStone(board.GetCell(i, j), playerId))
             {
                 count += 1;
             }
@@ -256,32 +258,35 @@ public class SmartGomokuStrategy : IAiStrategy
 
 public class DumbGomokuStrategy : IAiStrategy
 {
-    public Move chooseMove(IGame game)
+    public Move ChooseMove(IGame game)
     {
-        Board board = game.Board;
-        int[,] cells = board.GetCells();
-        Player computer = game.CurrentPlayer;
-
-        //find random valid cell to place a stone
-        List<Move> possibleMoves = new List<Move>();
-
-        for (int row = 0; row < board.Size; row++)
+        if (game is Gomoku gomoku)
         {
-            for (int col = 0; col < board.Size; col++)
+            Board board = gomoku.Board;
+            Player computer = game.CurrentPlayer;
+
+            //find random valid cell to place a stone
+            List<Move> possibleMoves = new List<Move>();
+
+            for (int row = 0; row < board.Size; row++)
             {
-                if (cells[row, col] == 0)
+                for (int col = 0; col < board.Size; col++)
                 {
-                    possibleMoves.Add(new Move(row+1,col+1,'O',computer));
+                    if (board.GetCell(row, col) == 0)
+                    {
+                        possibleMoves.Add(new Move(row + 1, col + 1, 'O', computer));
+                    }
                 }
             }
+
+            if (possibleMoves.Count == 0)
+                throw new Exception("No empty cells");
+
+            Random rand = new Random();
+            int index = rand.Next(0, possibleMoves.Count);
+            return possibleMoves[index];
         }
-
-        if(possibleMoves.Count ==0)
-            throw new Exception ("No empty cells");
-
-        Random rand = new Random();
-        int index = rand.Next(0,possibleMoves.Count);
-        return possibleMoves[index];
+        throw new Exception("This only supports Gomoku");
     }
 }
 

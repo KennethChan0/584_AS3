@@ -22,7 +22,7 @@ public class ComputerPlayer : Player
     }
     public Move GetMove(IGame game)
     {
-        return strategy.chooseMove(game);
+        return strategy.ChooseMove(game);
     }
 }
 
