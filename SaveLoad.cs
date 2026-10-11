@@ -1,6 +1,8 @@
-public void SaveGame()
+
+
+public void SaveGame(GameSession session, string fileName)
 {
-    const string FILENAME = "Save.txt";
+    const string FILENAME = fileName;
     string saveData = board.GetMemory();
     FileStream saveFile = new FileStream(FILENAME, FileMode.Create, FileAccess.Write);
     StreamWriter loadFile = new StreamWriter(saveFile);
@@ -17,10 +19,10 @@ public void SaveGame()
     saveFile.Close();
 }
 
-public void LoadGame()
+public void LoadGame(string fileName)
 {
 
-    const string FILENAME = "Save.txt";
+    const string FILENAME = fileName;
 
     if(!File.Exists(FILENAME))
         {
