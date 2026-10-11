@@ -9,9 +9,9 @@ public abstract class Board
         Columns = columns;
     }
 
-    public abstract char GetCell(int row, int col);
+    public abstract char GetCell(int row, int col); -> reutrn int
 
-    public abstract void SetCell(int row, int col, char symbol);
+    public abstract void SetCell(int row, int col, char symbol); -> symbol change to 0: empty, 1: X, 2: player1 heavy, 3: O, 4: player2 heavy (reversi: 1, 3)
 
     public abstract bool IsCellEmpty(int row, int col);
 
