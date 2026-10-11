@@ -6,6 +6,7 @@ public class Move
     public int Row{get;}
     public char Stone{get;}
     public Player player{get;} 
+
     public Move(int row, int col, char stone, Player player)
     {
         Col = col;
@@ -17,44 +18,62 @@ public class Move
 
 public class History
 {
-    public List <Move> movesHistory = new List<Move>();
-    public List <Move> redoHistory = new List<Move> ();
-    public List<Move> GetMoveHistory()
-    {
-        return movesHistory;
-    }
-    public List<Move> GetRedoHistory()
-    {
-        return redoHistory;
-    }
+    // Create a list to store moves and redo moves
+    private List<Move> movesHistory = new List<Move>();
+    private List <Move> redoHistory = new List<Move>();
+    
+    // Get the history of moves and redo moves
+    public List<Move> GetMovesHistory() => new List<Move>(movesHistory);  
 
+    public List<Move> GetRedoHistory() => new List<Move>(redoHistory);
+
+    // Add a move to the history and clear the redo history(undo two times and then make a new move, the redo history will be cleared)
     public void AddMove(Move move)
     {
         movesHistory.Add(move);
         redoHistory.Clear();
     }
 
-        public void UndoMove()
+    // Check if undo and redo are possible
+    public bool CanUndo() => movesHistory.Count >= 2;
+    public bool CanRedo() => redoHistory.Count >= 2;
+
+    public List<Move> UndoMove()
     {
-        if(movesHistory.Count < 2)
+        if (movesHistory.Count >= 2)
         {
-            return ;
+            int lastIndex = movesHistory.Count - 1; //m4
+            int lastSecondIndex = movesHistory.Count - 2; //m3
+            Move olderMoves = movesHistory[lastSecondIndex]; //m3
+            Move newerMoves = movesHistory[lastIndex]; //m4
+            movesHistory.RemoveRange(lastSecondIndex, 2); // Remove the last two moves from the history
+            redoHistory.Add(olderMoves); // Add m3
+            redoHistory.Add(newerMoves); // Add m4
+            return new List<Move> { newerMoves, olderMoves }; // GameSession take m4 first and then m3
         }
-        int LastIndex = movesHistory.Count -2;
-        redoHistory.AddRange(movesHistory.GetRange(LastIndex, 2));
-        movesHistory.RemoveRange(LastIndex,2);
+        else
+        {
+            return new List<Move>();
+        }
     }
 
-    public void RedoMove()
+    public List<Move> RedoMove()
     {   
-        if (redoHistory.Count < 2)
+        if(redoHistory.Count >= 2)
         {
-            return;
+            int lastIndex = redoHistory.Count - 1; //m2
+            int lastSecondIndex = redoHistory.Count - 2; //m1
+            Move olderMoves = redoHistory[lastSecondIndex]; //m1
+            Move newerMoves = redoHistory[lastIndex]; //m2
+            redoHistory.RemoveRange(lastSecondIndex, 2);
+            movesHistory.Add(olderMoves);
+            movesHistory.Add(newerMoves);
+            return new List<Move> { olderMoves, newerMoves };
         }
-        int LastIndex = redoHistory.Count -2;
-
-        movesHistory.AddRange(redoHistory.GetRange(LastIndex, 2));
-        redoHistory.RemoveRange(LastIndex,2);
+        else
+        {
+            return new List<Move>();
+        }
     }
     
 }
