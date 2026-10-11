@@ -28,9 +28,9 @@ public class CommandParser
     {
         char stone = playerInput[0];
 
-        if (stone != 'O' && stone != 'H' && stone != 'E')
+        if (stone != 'O' && stone != 'H' && stone != 'E' && stone != 'P')
         {
-            throw new Exception("Stone must be 'O' or 'H' or 'E'!");
+            throw new Exception("Stone must be 'O', 'H', 'E' (Gomoku) or 'P' (Reversi)!");
         }
 
         string[] parts = playerInput.Substring(1).Split(':');
