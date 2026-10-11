@@ -4,7 +4,6 @@ public abstract class Reversi : IGame
     private const int Empty = 0;
     private Dictionary<Move, List<(int Row, int Col)>> flipped = new Dictionary<Move, List<(int Row, int Col)>>();
 
-
     protected Reversi(Board board, List<Player> players)
     {
         Board = board;
@@ -41,17 +40,9 @@ public abstract class Reversi : IGame
 
     public bool ValidateMove(Move move)
     {
-        if (move.Stone == Move.Pass)
-        {
-            if (GetPossibleMove(move.player)[0].Stone != Move.Pass)
-            {
-                return Fail("You still have a legal move, so you cannot PASS.");
-            }
-            return true;
-        }
         if (move.Stone != 'P')
         {
-            return Fail("Use P[row]:[col] or PASS in Reversi.");
+            return Fail("Use P[row]:[col] in Reversi, e.g. P3:4.");
         }
         if (!IsInsideBoard(move.Row, move.Col))
         {
@@ -70,32 +61,37 @@ public abstract class Reversi : IGame
 
     public void ExecuteMove(Move move)
     {
-        if (move.Stone != Move.Pass)
+        List<(int Row, int Col)> disks = GetFlips(move.Row, move.Col, move.player);
+        flipped[move] = disks;   // keep them for undo
+        Board.PlaceStone(move.Row, move.Col, move.player.Id);
+        foreach ((int Row, int Col) disk in disks)
         {
-            List<(int Row, int Col)> disks = GetFlips(move.Row, move.Col, move.player);
-            flipped[move] = disks;
-            Board.PlaceStone(move.Row, move.Col, move.player.Id);
-            foreach ((int Row, int Col) disk in disks)
-            {
-                Board.PlaceStone(disk.Row, disk.Col, move.player.Id);
-            }
+            Board.PlaceStone(disk.Row, disk.Col, move.player.Id);
         }
-        SwitchPlayer();
+
+        Player opponent = Opponent(move.player);
+        if (GetPossibleMove(opponent).Count == 0 && GetPossibleMove(move.player).Count > 0)
+        {
+            Console.WriteLine($"  {opponent.Name} has no legal move, so it is {move.player.Name}'s turn again.");
+            SetCurrentPlayer(move.player);
+        }
+        else
+        {
+            SetCurrentPlayer(opponent);
+        }
     }
 
     public void UndoMove(Move move)
     {
-        if (move.Stone != Move.Pass)
+        int opponent = Opponent(move.player).Id;
+        foreach ((int Row, int Col) disk in flipped[move])
         {
-            int opponent = Opponent(move.player).Id;
-            foreach ((int Row, int Col) disk in flipped[move])
-            {
-                Board.PlaceStone(disk.Row, disk.Col, opponent);   // flip back
-            }
-            flipped.Remove(move);
-            Board.RemoveStone(move.Row, move.Col);
+            Board.PlaceStone(disk.Row, disk.Col, opponent);   // flip back
         }
-        SwitchPlayer();
+        flipped.Remove(move);
+        Board.RemoveStone(move.Row, move.Col);
+
+        SetCurrentPlayer(move.player);
         IsOver = false;
         Winner = null;
     }
@@ -106,7 +102,7 @@ public abstract class Reversi : IGame
     }
 
     public abstract bool CheckWin();
-    
+
     public List<Move> GetPossibleMove(Player player)
     {
         List<Move> moves = new List<Move>();
@@ -119,10 +115,6 @@ public abstract class Reversi : IGame
                     moves.Add(new Move(r, c, 'P', player));
                 }
             }
-        }
-        if (moves.Count == 0)
-        {
-            moves.Add(new Move(0, 0, Move.Pass, player));
         }
         return moves;
     }
@@ -169,13 +161,14 @@ public abstract class Reversi : IGame
         "  Place a disk on an empty cell so that it flanks one or more opponent disks\n" +
         "  in a straight line (horizontal, vertical or diagonal) ending in one of your disks.\n" +
         "  All flanked opponent disks flip to your colour.\n" +
-        "  Every move must flip at least one disk. If you have no legal move, type PASS.\n" +
+        "  Every move must flip at least one disk.\n" +
+        "  If a player has no legal move, their turn is skipped automatically.\n" +
         "  The game ends when neither player can move (or the board is full).\n" +
-        "  Moves: P3:4 (place a disk at row 3, column 4), PASS\n";
+        "  Move: P3:4 (place a disk at row 3, column 4)\n";
 
     protected bool NoMovesLeft()
     {
-        return GetPossibleMove(Players[0])[0].Stone == Move.Pass && GetPossibleMove(Players[1])[0].Stone == Move.Pass;
+        return GetPossibleMove(Players[0]).Count == 0 && GetPossibleMove(Players[1]).Count == 0;
     }
 
     protected int CountDisks(Player player)
@@ -222,15 +215,15 @@ public abstract class Reversi : IGame
         }
         return Players[0];
     }
-    
+
     private bool IsInsideBoard(int row, int col)
     {
         return row >= 1 && row <= Board.Size && col >= 1 && col <= Board.Size;
     }
 
-    private void SwitchPlayer()
+    private void SetCurrentPlayer(Player player)
     {
-        currentIndex = 1 - currentIndex;
+        currentIndex = Players.IndexOf(player);
     }
 
     protected static bool Fail(string message)
