@@ -4,10 +4,7 @@ public class Standard : Reversi
     {
     }
 
-    public override string Name
-    {
-        get { return "Reversi Standard"; }
-    }
+    public override string Name => "Standard Reversi";
 
     public override bool CheckWin()
     {
@@ -16,7 +13,7 @@ public class Standard : Reversi
 
     public override string GetGameInfo()
     {
-        return "Standard Reversi\n" + Rules +
-            "  Win: the player with MORE disks wins. Equal counts = draw.\n";
+        return Rules +
+            "Win: The player with MORE disks wins. Equal counts = draw.\n";
     }
 }

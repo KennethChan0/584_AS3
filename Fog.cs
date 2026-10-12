@@ -202,8 +202,6 @@ public class Fog : Gomoku
     public override string GetGameInfo()
     {
         return
-            "GomokuFog\n" +
-            "Board: 10 x 10\n" +
             "Only ordinary stones are allowed.\n" +
             "Players see their own stones and adjacent cells.\n" +
             "Other cells are displayed as '?'.\n" +

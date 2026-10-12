@@ -1,6 +1,5 @@
 public class Move
 {
-    public const char Pass = 'S';  // 'S' as an internal symbol to represent a PASS move, allowing Reversi.cs to recognise it.
     public int Col{get;}
     public int Row{get;}
     public char Stone{get;}
