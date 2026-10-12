@@ -1,181 +1,233 @@
+public class SaveFileException : Exception
+{
+    public SaveFileException(string message): base(message)
+    {
+        
+    }
+}
+
+
 public class SaveLoad
 {
-    public bool SaveGame(GameSession session, string filename)
-    {
-        IGame game = session.GetGame();
-        List<string> lines = new List<string>();
+    private const string FILENAME = "savegame.txt";
+    private const char DELIM =',';
+    private const char HEADER_DELIM = '=';
+    private const string MOVES_MARK = "MOVES";
 
-        lines.Add($"VARIANT={session.Variant}");
-        lines.Add($"MODE={session.Mode}");
-        lines.Add($"TURN={session.GetTurnCount()}");
-        lines.Add($"ACTIVE={game.CurrentPlayer.Id}");
-        lines.Add("MOVES");
-        foreach (Move move in session.GetMoveHistory())
-        {
-            lines.Add(MoveToLine(move));
-        }
+    public bool SaveGame(GameSession session)
+    {
+        bool saved = false;
+        IGame game = session.GetGame();
+        FileStream inFile;
+        StreamReader reader;
 
         try
         {
-            File.WriteAllLines(filename, lines);
-            return true;
+            inFile = new FileStream(FILENAME, FileMode.Create, FileAccess.Write);
+            reader = new StreamReader(inFile);
+
+            reader.WriteLine("VARIANT" + HEADER_DELIM + session.Variant);
+            reader.WriteLine("MODE" + HEADER_DELIM + session.Mode);
+            reader.WriteLine("TURN" + HEADER_DELIM + session.GetTurn());
+            reader.WriteLine("ACTIVE" + HEADER_DELIM + game.CurrentPlayer.Id);
+            reader.WriteLine(MOVES_MARK);
+            foreach (Move move in session.GetMovesHistory())
+            {
+                reader.WriteLine(move.Stone.ToString() + DELIM + move.Row + DELIM + move.Col + DELIM + move.player.Id);
+            }
+            reader.Close();
+            inFile.Close();
+            saved = true;
         }
-        catch (Exception e)
+        catch(Exception e)
         {
-            Console.WriteLine($"  ! Save failed: {e.Message}");
-            return false;
+            Console.WriteLine("Save failed:" + e.Message);
         }
+        return saved;
     }
 
-    public GameSession? LoadGame(string filename)
+
+    public GameSession? LoadGame()
     {
-        if (!File.Exists(filename))
+        GameSession? session = null;
+        List<string> lines;
+
+        if (!File.Exists(FILENAME))
         {
-            Console.WriteLine($"  ! File not found: {filename}");
-            return null;
+            Console.WriteLine("  ! File not found: " + FILENAME);
         }
-
-        string[] lines;
-        try
+        else
         {
-            lines = File.ReadAllLines(filename);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine($"  ! Could not read the file: {e.Message}");
-            return null;
-        }
-
-        // ----- read the header and collect the move lines -----
-        string? variant = null;
-        string? mode = null;
-        string? turnText = null;
-        string? activeText = null;
-        List<string> moveLines = new List<string>();
-        bool inMoves = false;
-
-        foreach (string rawLine in lines)
-        {
-            string line = rawLine.Trim();
-            if (line.Length == 0)
+            try
             {
-                continue;
+                lines = ReadFileLines();
+                session = Rebuild(lines);
             }
-
-            if (inMoves)
+            catch (SaveFileException e)
             {
-                moveLines.Add(line);
+                Console.WriteLine("  ! " + e.Message);
+                session = null;
             }
-            else if (line == "MOVES")
+            catch (Exception e)
             {
-                inMoves = true;
-            }
-            else if (line.StartsWith("VARIANT="))
-            {
-                variant = line.Substring("VARIANT=".Length);
-            }
-            else if (line.StartsWith("MODE="))
-            {
-                mode = line.Substring("MODE=".Length);
-            }
-            else if (line.StartsWith("TURN="))
-            {
-                turnText = line.Substring("TURN=".Length);
-            }
-            else if (line.StartsWith("ACTIVE="))
-            {
-                activeText = line.Substring("ACTIVE=".Length);
+                Console.WriteLine("  ! Could not load the file: " + e.Message);
+                session = null;
             }
         }
-
-        if (variant == null || mode == null || !inMoves)
-        {
-            Console.WriteLine("  ! The save file is missing required lines.");
-            return null;
-        }
-        if (!int.TryParse(turnText, out int expectedTurn) ||
-            !int.TryParse(activeText, out int expectedActive))
-        {
-            Console.WriteLine("  ! TURN or ACTIVE in the save file is not a number.");
-            return null;
-        }
-
-        // ----- rebuild a brand-new game through the factory -----
-        IGameFactory? factory = GameMenu.FindFactory(variant);
-        if (factory == null)
-        {
-            Console.WriteLine($"  ! Unknown variant '{variant}' in the save file.");
-            return null;
-        }
-
-        GameSession session;
-        try
-        {
-            Board board = factory.CreateBoard();
-            List<Player> players = factory.CreatePlayer(mode, variant);
-            IGame game = factory.CreateGame(variant, board, players);
-            session = new GameSession(game, variant, mode);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine($"  ! Could not rebuild the game: {e.Message}");
-            return null;
-        }
-
-        // ----- replay every move through the normal path -----
-        int number = 0;
-        foreach (string moveLine in moveLines)
-        {
-            number++;
-            Move? move = LineToMove(moveLine, session.GetGame().Players);
-            if (move == null)
-            {
-                Console.WriteLine($"  ! Bad move line {number}: {moveLine}");
-                return null;
-            }
-            if (!session.TryLegalMove(move))
-            {
-                Console.WriteLine($"  ! Move {number} ({moveLine}) is not legal in this game.");
-                return null;
-            }
-        }
-
-        // ----- check the replay against what the file says -----
-        if (session.GetTurnCount() != expectedTurn ||
-            session.GetGame().CurrentPlayer.Id != expectedActive)
-        {
-            Console.WriteLine("  ! The save file does not match the replayed game (corrupt file?).");
-            return null;
-        }
-
         return session;
     }
 
-    private string MoveToLine(Move move)
+    private List<string> ReadFileLines()
     {
-        return $"{move.Stone},{move.Row},{move.Col},{move.player.Id}";
-    }
+        List<string> lines = new List<string>();
+        string? recordIn;
+        FileStream inFile = new FileStream(FILENAME, FileMode.Open, FileAccess.Read);
+        StreamReader reader = new StreamReader(inFile);
 
-    private Move? LineToMove(string line, List<Player> players)
-    {
-        string[] parts = line.Split(',');
-        if (parts.Length != 4 || parts[0].Length != 1)
+        recordIn = reader.ReadLine();
+        while (recordIn != null)
         {
-            return null;
+            lines.Add(recordIn.Trim());
+            recordIn = reader.ReadLine();
         }
 
-        char stone = parts[0][0];
-        if (!int.TryParse(parts[1], out int row)) return null;
-        if (!int.TryParse(parts[2], out int col)) return null;
-        if (!int.TryParse(parts[3], out int playerId)) return null;
+        reader.Close();
+        inFile.Close();
+        return lines;
+    }
+
+    private GameSession Rebuild(List<string> lines)
+    {
+        string variant = "";
+        string mode = "";
+        int expectedTurn = -1;
+        int expectedActive = -1;
+        bool inMoves = false;
+        List<string> moveLines = new List<string>();
+        string[] fields;
+
+        foreach (string line in lines)
+        {
+            if (line.Length > 0)
+            {
+                if (inMoves)
+                {
+                    moveLines.Add(line);
+                }
+                else if (line == MOVES_MARK)
+                {
+                    inMoves = true;
+                }
+                else
+                {
+                    fields = line.Split(HEADER_DELIM);
+                    if (fields.Length != 2)
+                    {
+                        throw new SaveFileException("Bad header line: " + line);
+                    }
+
+                    if (fields[0] == "VARIANT")
+                    {
+                        variant = fields[1];
+                    }
+                    else if (fields[0] == "MODE")
+                    {
+                        mode = fields[1];
+                    }
+                    else if (fields[0] == "TURN")
+                    {
+                        expectedTurn = ToNumber(fields[1], line);
+                    }
+                    else if (fields[0] == "ACTIVE")
+                    {
+                        expectedActive = ToNumber(fields[1], line);
+                    }
+                    else
+                    {
+                        throw new SaveFileException("Unknown header line: " + line);
+                    }
+                }
+            }
+        }
+
+        if (variant == "" || mode == "" || expectedTurn < 0 || expectedActive < 0 || !inMoves)
+        {
+            throw new SaveFileException("The save file is missing required lines.");
+        }
+        IGameFactory? factory = GameMenu.FindFactory(variant);
+        if (factory == null)
+        {
+            throw new SaveFileException("Unknown variant '" + variant + "' in the save file.");
+        }
+
+        Board board = factory.CreateBoard();
+        List<Player> players = factory.CreatePlayer(mode, variant);
+        IGame game = factory.CreateGame(variant, board, players);
+        GameSession session = new GameSession(game, variant, mode);
+
+        int number = 0;
+        Move move;
+        foreach (string moveLine in moveLines)
+        {
+            number++;
+            move = LineToMove(moveLine, game.Players);
+            if (!session.ApplyMove(move))
+            {
+                throw new SaveFileException("Move " + number + " (" + moveLine + ") is not legal in this game.");
+            }
+        }
+
+        if (session.GetTurn() != expectedTurn || game.CurrentPlayer.Id != expectedActive)
+        {
+            throw new SaveFileException("The save file does not match the replayed game (corrupt file?).");
+        }
+        return session;
+    }
+
+    private Move LineToMove(string line, List<Player> players)
+    {
+        string[] fields = line.Split(DELIM);
+        Player? owner = null;
+        char stone;
+        int row;
+        int col;
+        int playerId;
+
+        if (fields.Length != 4 || fields[0].Length != 1)
+        {
+            throw new SaveFileException("Bad move line: " + line);
+        }
+
+        stone = fields[0][0];
+        row = ToNumber(fields[1], line);
+        col = ToNumber(fields[2], line);
+        playerId = ToNumber(fields[3], line);
 
         foreach (Player p in players)
         {
             if (p.Id == playerId)
             {
-                return new Move(row, col, stone, p);   // the SAME player object the game uses
+                owner = p;
             }
         }
-        return null;
+        if (owner == null)
+        {
+            throw new SaveFileException("Unknown player in line: " + line);
+        }
+        return new Move(row, col, stone, owner);
+    }
+
+    private int ToNumber(string text, string context)
+    {
+        int number;
+
+        if (!int.TryParse(text, out number))
+        {
+            throw new SaveFileException("Not a number in: " + context);
+        }
+        return number;
     }
 }
+    
+
+
