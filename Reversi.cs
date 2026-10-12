@@ -1,7 +1,13 @@
 public abstract class Reversi : IGame
 {
     private int currentIndex = 0;
+
+    // Cell values on the board (shared with Gomoku):
+    // 0 = Empty, 1 = Player 1 disk (X), 3 = Player 2 disk (O).
+    // Reversi uses 0, 1 and 3 only (2 and 4 are Gomoku heavy stones).
     private const int Empty = 0;
+    private const int Player1BoardValue = 1;
+    private const int Player2BoardValue = 3;
     private Dictionary<Move, List<(int Row, int Col)>> flipped = new Dictionary<Move, List<(int Row, int Col)>>();
 
     protected Reversi(Board board, List<Player> players)
@@ -10,10 +16,10 @@ public abstract class Reversi : IGame
         Players = players;
 
         int mid = board.Size / 2;
-        board.PlaceStone(mid, mid, players[1].Id);
-        board.PlaceStone(mid, mid + 1, players[0].Id);
-        board.PlaceStone(mid + 1, mid, players[0].Id);
-        board.PlaceStone(mid + 1, mid + 1, players[1].Id);
+        board.PlaceStone(mid, mid, GetBoardValue(players[1]));
+        board.PlaceStone(mid, mid + 1, GetBoardValue(players[0]));
+        board.PlaceStone(mid + 1, mid, GetBoardValue(players[0]));
+        board.PlaceStone(mid + 1, mid + 1, GetBoardValue(players[1]));
     }
 
     public Board Board { get; }
@@ -63,12 +69,15 @@ public abstract class Reversi : IGame
     {
         List<(int Row, int Col)> disks = GetFlips(move.Row, move.Col, move.player);
         flipped[move] = disks;   // keep them for undo
-        Board.PlaceStone(move.Row, move.Col, move.player.Id);
+        Board.PlaceStone(move.Row, move.Col, GetBoardValue(move.player));
         foreach ((int Row, int Col) disk in disks)
         {
-            Board.PlaceStone(disk.Row, disk.Col, move.player.Id);
+            Board.PlaceStone(disk.Row, disk.Col, GetBoardValue(move.player));
         }
 
+        // Next turn: normally the opponent.
+        // If the opponent has no legal move but this player still has one,
+        // the opponent's turn is skipped and this player goes again.
         Player opponent = Opponent(move.player);
         if (GetPossibleMove(opponent).Count == 0 && GetPossibleMove(move.player).Count > 0)
         {
@@ -83,14 +92,16 @@ public abstract class Reversi : IGame
 
     public void UndoMove(Move move)
     {
-        int opponent = Opponent(move.player).Id;
+        int opponentDisk = GetBoardValue(Opponent(move.player));
         foreach ((int Row, int Col) disk in flipped[move])
         {
-            Board.PlaceStone(disk.Row, disk.Col, opponent);   // flip back
+            Board.PlaceStone(disk.Row, disk.Col, opponentDisk);   // flip back
         }
         flipped.Remove(move);
         Board.RemoveStone(move.Row, move.Col);
 
+        // after undo it is the turn of the player who made this move
+        // (works even if a turn was skipped)
         SetCurrentPlayer(move.player);
         IsOver = false;
         Winner = null;
@@ -133,13 +144,13 @@ public abstract class Reversi : IGame
                 List<(int Row, int Col)> line = new List<(int Row, int Col)>();
                 int r = row + dr;
                 int c = col + dc;
-                while (IsInsideBoard(r, c) && Board.GetCell(r, c) != Empty && Board.GetCell(r, c) != player.Id)
+                while (IsInsideBoard(r, c) && Board.GetCell(r, c) != Empty && Board.GetCell(r, c) != GetBoardValue(player))
                 {
                     line.Add((r, c));
                     r += dr;
                     c += dc;
                 }
-                if (line.Count > 0 && IsInsideBoard(r, c) && Board.GetCell(r, c) == player.Id)
+                if (line.Count > 0 && IsInsideBoard(r, c) && Board.GetCell(r, c) == GetBoardValue(player))
                 {
                     flips.AddRange(line);
                 }
@@ -178,7 +189,7 @@ public abstract class Reversi : IGame
         {
             for (int c = 1; c <= Board.Size; c++)
             {
-                if (Board.GetCell(r, c) == player.Id)
+                if (Board.GetCell(r, c) == GetBoardValue(player))
                 {
                     count++;
                 }
@@ -214,6 +225,15 @@ public abstract class Reversi : IGame
             return Players[1];
         }
         return Players[0];
+    }
+
+    protected int GetBoardValue(Player player)
+    {
+        if (player.Id == 1)
+        {
+            return Player1BoardValue;
+        }
+        return Player2BoardValue;
     }
 
     private bool IsInsideBoard(int row, int col)
