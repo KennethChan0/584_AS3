@@ -1,5 +1,3 @@
-using System.Reflection.Metadata;
-
 public class SmartGomokuStrategy : IAiStrategy
 {
     public Move ChooseMove(IGame game)
@@ -21,33 +19,32 @@ public class SmartGomokuStrategy : IAiStrategy
                 opponentId = 1;
             }
 
-
             // Find out my possible 5-in-row, 4-in-row, 3-in-roow... and line up
             for (int target = 5; target >= 2; target--)
             {
-                for (int row = 0; row < board.Size; row++)
+                for (int row = 1; row <= board.Size; row++)
                 {
-                    for (int col = 0; col < board.Size; col++)
+                    for (int col = 1; col <= board.Size; col++)
                     {
                         if (board.GetCell(row, col) == 0)
                         {
                             if (FindLongestLine(board, row, col, computerId, target))
                             {
-                                return new Move(row + 1, col + 1, 'O', computer);
+                                return new Move(row, col, 'O', computer);
                             }
                         }
                     }
                 }
                 // Find out opponent possible 5-in-row, 4-in-row, 3-in-roow... and block it
-                for (int row = 0; row < board.Size; row++)
+                for (int row = 1; row <= board.Size; row++)
                 {
-                    for (int col = 0; col < board.Size; col++)
+                    for (int col = 1; col <= board.Size; col++)
                     {
                         if (board.GetCell(row, col) == 0)
                         {
                             if (FindLongestLine(board, row, col, opponentId, target))
                             {
-                                return new Move(row + 1, col + 1, 'O', computer);
+                                return new Move(row, col, 'O', computer);
                             }
                         }
                     }
@@ -57,13 +54,13 @@ public class SmartGomokuStrategy : IAiStrategy
             //find random possible place if cannot find any 2 in row 
             List<Move> possibleMoves = new List<Move>();
 
-            for (int row = 0; row < board.Size; row++)
+            for (int row = 1; row <= board.Size; row++)
             {
-                for (int col = 0; col < board.Size; col++)
+                for (int col = 1; col <= board.Size; col++)
                 {
                     if (board.GetCell(row, col) == 0)
                     {
-                        possibleMoves.Add(new Move(row + 1, col + 1, 'O', computer));
+                        possibleMoves.Add(new Move(row, col, 'O', computer));
                     }
                 }
             }
@@ -83,13 +80,15 @@ public class SmartGomokuStrategy : IAiStrategy
     //Matching cell values with player and return cell contents
     private bool PlayerStone(int playerCellValue, int playerId)
     {
+        // Board values: 1 = Player 1 ordinary, 2 = Player 1 heavy,
+        //               3 = Player 2 ordinary, 4 = Player 2 heavy
         if (playerId == 1)
         {
-            return playerCellValue == 1 || playerCellValue == 3;
+            return playerCellValue == 1 || playerCellValue == 2;
         }
         else if (playerId == 2)
         {
-            return playerCellValue == 2 || playerCellValue == 4;
+            return playerCellValue == 3 || playerCellValue == 4;
         }
         return false;
     }
@@ -125,8 +124,7 @@ public class SmartGomokuStrategy : IAiStrategy
     {
         int count = 1;
 
-
-        for (int i = col + 1; i < board.Size; i++)
+        for (int i = col + 1; i <= board.Size; i++)
         {
             if (PlayerStone(board.GetCell(row, i), playerId))
             {
@@ -138,7 +136,7 @@ public class SmartGomokuStrategy : IAiStrategy
             }
         }
 
-        for (int i = col - 1; i >= 0; i--)
+        for (int i = col - 1; i >= 1; i--)
         {
             if (PlayerStone(board.GetCell(row, i), playerId))
             {
@@ -158,8 +156,7 @@ public class SmartGomokuStrategy : IAiStrategy
     {
         int count = 1;
 
-
-        for (int i = row + 1; i < board.Size; i++)
+        for (int i = row + 1; i <= board.Size; i++)
         {
             if (PlayerStone(board.GetCell(i, col), playerId))
             {
@@ -171,7 +168,7 @@ public class SmartGomokuStrategy : IAiStrategy
             }
         }
 
-        for (int i = row - 1; i >= 0; i--)
+        for (int i = row - 1; i >= 1; i--)
         {
             if (PlayerStone(board.GetCell(i, col), playerId))
             {
@@ -191,7 +188,7 @@ public class SmartGomokuStrategy : IAiStrategy
     {
         int count = 1;
 
-        for (int i = row + 1, j = col + 1; i < board.Size && j < board.Size; i++, j++)
+        for (int i = row + 1, j = col + 1; i <= board.Size && j <= board.Size; i++, j++)
         {
 
             if (PlayerStone(board.GetCell(i, j), playerId))
@@ -204,7 +201,7 @@ public class SmartGomokuStrategy : IAiStrategy
             }
         }
 
-        for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--)
+        for (int i = row - 1, j = col - 1; i >= 1 && j >= 1; i--, j--)
         {
 
             if (PlayerStone(board.GetCell(i, j), playerId))
@@ -226,7 +223,7 @@ public class SmartGomokuStrategy : IAiStrategy
 
         int count = 1;
 
-        for (int i = row + 1, j = col - 1; i < board.Size && j >= 0; i++, j--)
+        for (int i = row + 1, j = col - 1; i <= board.Size && j >= 1; i++, j--)
         {
 
             if (PlayerStone(board.GetCell(i, j), playerId))
@@ -239,7 +236,7 @@ public class SmartGomokuStrategy : IAiStrategy
             }
         }
 
-        for (int i = row - 1, j = col + 1; i >= 0 && j < board.Size; i--, j++)
+        for (int i = row - 1, j = col + 1; i >= 1 && j <= board.Size; i--, j++)
         {
 
             if (PlayerStone(board.GetCell(i, j), playerId))
@@ -268,13 +265,13 @@ public class DumbGomokuStrategy : IAiStrategy
             //find random valid cell to place a stone
             List<Move> possibleMoves = new List<Move>();
 
-            for (int row = 0; row < board.Size; row++)
+            for (int row = 1; row <= board.Size; row++)
             {
-                for (int col = 0; col < board.Size; col++)
+                for (int col = 1; col <= board.Size; col++)
                 {
                     if (board.GetCell(row, col) == 0)
                     {
-                        possibleMoves.Add(new Move(row + 1, col + 1, 'O', computer));
+                        possibleMoves.Add(new Move(row, col, 'O', computer));
                     }
                 }
             }
@@ -289,4 +286,3 @@ public class DumbGomokuStrategy : IAiStrategy
         throw new Exception("This only supports Gomoku");
     }
 }
-

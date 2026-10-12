@@ -14,10 +14,9 @@ public class Plus : Gomoku
     // Remember the original cell value for Undo
     private readonly Dictionary<Move, int> previousCells = new();
 
-    // Default quantities are provisional.
-    // Confirm these values against Assignment 2 rules.
+    // Each player starts with 2 Heavy stones and 2 Erasers.
     public Plus(Board board, List<Player> players)
-        : this(board, players, 1, 1)
+        : this(board, players, 2, 2)
     {
     }
 
@@ -269,8 +268,6 @@ public class Plus : Gomoku
     public override string GetGameInfo()
     {
         return
-            "GomokuPlus\n" +
-            "Board: 10 x 10\n" +
             "O[row]:[col] - Place an ordinary stone\n" +
             "H[row]:[col] - Place a heavy stone\n" +
             "E[row]:[col] - Erase an opponent's ordinary stone\n" +

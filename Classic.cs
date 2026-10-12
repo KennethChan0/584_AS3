@@ -174,8 +174,6 @@ public class Classic : Gomoku
     public override string GetGameInfo()
     {
         return
-            "Classic Gomoku\n" +
-            "Board: 10 x 10\n" +
             "Players: X and O\n" +
             "Rules: Take turns placing ordinary stones.\n" +
             "Win: Five consecutive stones horizontally, " +

@@ -37,7 +37,7 @@ public class CommandParser
 
         if (parts.Length != 2)
         {
-            throw new Exception("Please use format O[row]:[column]");
+            throw new Exception("Please use the format [stone][row]:[column], e.g. O3:4 or P3:4");
         }
 
         bool rowIsNumber = int.TryParse(parts[0], out int row);

@@ -167,15 +167,15 @@ public abstract class Reversi : IGame
     public abstract string GetGameInfo();
 
     protected const string Rules =
-        "  Board: 8 x 8. X = Dark (Player 1, moves first), O = Light (Player 2).\n" +
-        "  Start: (4,4)=O, (4,5)=X, (5,4)=X, (5,5)=O.\n" +
-        "  Place a disk on an empty cell so that it flanks one or more opponent disks\n" +
-        "  in a straight line (horizontal, vertical or diagonal) ending in one of your disks.\n" +
-        "  All flanked opponent disks flip to your colour.\n" +
-        "  Every move must flip at least one disk.\n" +
-        "  If a player has no legal move, their turn is skipped automatically.\n" +
-        "  The game ends when neither player can move (or the board is full).\n" +
-        "  Move: P3:4 (place a disk at row 3, column 4)\n";
+        "Players: X (Player 1, moves first) and O (Player 2 or Computer).\n" +
+        "Start: (4,4)=O, (4,5)=X, (5,4)=X, (5,5)=O.\n" +
+        "Rules: Place a disk so it traps opponent disks in a straight line\n" +
+        "       (horizontal, vertical or diagonal) with one of your disks at the other end.\n" +
+        "       All trapped disks flip to your colour.\n" +
+        "       Every move must flip at least one disk.\n" +
+        "       If you have no legal move, your turn is skipped automatically.\n" +
+        "       The game ends when neither player can move.\n" +
+        "Move: P3:4 (place a disk at row 3, column 4)\n";
 
     protected bool NoMovesLeft()
     {
