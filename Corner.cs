@@ -14,11 +14,12 @@ public class Corner : Reversi
         int size = Board.Size;
         foreach (Player player in Players)
         {
+            int disk = GetBoardValue(player);
             int corners = 0;
-            if (Board.GetCell(1, 1) == player.Id) corners++;
-            if (Board.GetCell(1, size) == player.Id) corners++;
-            if (Board.GetCell(size, 1) == player.Id) corners++;
-            if (Board.GetCell(size, size) == player.Id) corners++;
+            if (Board.GetCell(1, 1) == disk) corners++;
+            if (Board.GetCell(1, size) == disk) corners++;
+            if (Board.GetCell(size, 1) == disk) corners++;
+            if (Board.GetCell(size, size) == disk) corners++;
 
             if (corners >= 3)
             {
