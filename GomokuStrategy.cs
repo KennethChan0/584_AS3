@@ -1,3 +1,5 @@
+using System.Reflection.Metadata;
+
 public class SmartGomokuStrategy : IAiStrategy
 {
     public Move ChooseMove(IGame game)
@@ -19,6 +21,7 @@ public class SmartGomokuStrategy : IAiStrategy
                 opponentId = 1;
             }
 
+
             // Find out my possible 5-in-row, 4-in-row, 3-in-roow... and line up
             for (int target = 5; target >= 2; target--)
             {
@@ -30,7 +33,7 @@ public class SmartGomokuStrategy : IAiStrategy
                         {
                             if (FindLongestLine(board, row, col, computerId, target))
                             {
-                                return new Move(row, col, 'O', computer);
+                                return new Move(row , col , 'O', computer);
                             }
                         }
                     }
@@ -44,7 +47,7 @@ public class SmartGomokuStrategy : IAiStrategy
                         {
                             if (FindLongestLine(board, row, col, opponentId, target))
                             {
-                                return new Move(row, col, 'O', computer);
+                                return new Move(row , col , 'O', computer);
                             }
                         }
                     }
@@ -60,7 +63,7 @@ public class SmartGomokuStrategy : IAiStrategy
                 {
                     if (board.GetCell(row, col) == 0)
                     {
-                        possibleMoves.Add(new Move(row, col, 'O', computer));
+                        possibleMoves.Add(new Move(row , col , 'O', computer));
                     }
                 }
             }
@@ -80,8 +83,6 @@ public class SmartGomokuStrategy : IAiStrategy
     //Matching cell values with player and return cell contents
     private bool PlayerStone(int playerCellValue, int playerId)
     {
-        // Board values: 1 = Player 1 ordinary, 2 = Player 1 heavy,
-        //               3 = Player 2 ordinary, 4 = Player 2 heavy
         if (playerId == 1)
         {
             return playerCellValue == 1 || playerCellValue == 2;
@@ -96,160 +97,54 @@ public class SmartGomokuStrategy : IAiStrategy
     //combining all winning  methods
     private bool FindLongestLine(Board board, int row, int col, int playerId, int target)
     {
-        if (CheckHorizontal(board, row, col, playerId, target) == true)
+        if (CheckLine(board, row, col, 0,1,playerId, target) == true)
         {
             return true;
         }
 
-        if (CheckVertical(board, row, col, playerId, target))
+        if (CheckLine(board, row, col, 1,0,playerId, target) == true)
         {
             return true;
         }
 
-        if (CheckDiagonal1(board, row, col, playerId, target) == true)
+        if (CheckLine(board, row, col, 1,1,playerId, target) == true)
         {
             return true;
         }
 
-        if (CheckDiagonal2(board, row, col, playerId, target))
+        if (CheckLine(board, row, col, 1,-1,playerId, target) == true)
         {
             return true;
         }
+
 
         return false;
     }
 
     //check horizontal win
-    private bool CheckHorizontal(Board board, int row, int col, int playerId, int target)
+    private int CountStones(Board board, int row, int col,int rowDirection, int colDirection, int playerId)
     {
-        int count = 1;
+        int count = 0;
 
-        for (int i = col + 1; i <= board.Size; i++)
+        while(row>=1 && col>=1 && row<=board.Size && col <= board.Size&&PlayerStone(board.GetCell(row,col),playerId)==true)
         {
-            if (PlayerStone(board.GetCell(row, i), playerId))
-            {
-                count += 1;
-            }
-            else
-            {
-                break;
-            }
+            count+=1;
+            row+= rowDirection;
+            col+=colDirection;
         }
 
-        for (int i = col - 1; i >= 1; i--)
-        {
-            if (PlayerStone(board.GetCell(row, i), playerId))
-            {
-                count += 1;
-            }
-            else
-            {
-                break;
-            }
-        }
-
-        return count >= target;
+        return count;
     }
 
-    //check vertical win
-    private bool CheckVertical(Board board, int row, int col, int playerId, int target)
+    private bool CheckLine(Board board, int row, int col,int rowDirection, int colDirection, int playerId, int target)
     {
-        int count = 1;
+        int count =1;
 
-        for (int i = row + 1; i <= board.Size; i++)
-        {
-            if (PlayerStone(board.GetCell(i, col), playerId))
-            {
-                count += 1;
-            }
-            else
-            {
-                break;
-            }
-        }
+        count += CountStones(board, row+rowDirection, col+colDirection, rowDirection,colDirection,playerId);
+        count += CountStones(board, row-rowDirection, col-colDirection, -rowDirection,-colDirection,playerId);
 
-        for (int i = row - 1; i >= 1; i--)
-        {
-            if (PlayerStone(board.GetCell(i, col), playerId))
-            {
-                count += 1;
-            }
-            else
-            {
-                break;
-            }
-        }
 
-        return count >= target;
-    }
-
-    //check backslash win \
-    private bool CheckDiagonal1(Board board, int row, int col, int playerId, int target)
-    {
-        int count = 1;
-
-        for (int i = row + 1, j = col + 1; i <= board.Size && j <= board.Size; i++, j++)
-        {
-
-            if (PlayerStone(board.GetCell(i, j), playerId))
-            {
-                count += 1;
-            }
-            else
-            {
-                break;
-            }
-        }
-
-        for (int i = row - 1, j = col - 1; i >= 1 && j >= 1; i--, j--)
-        {
-
-            if (PlayerStone(board.GetCell(i, j), playerId))
-            {
-                count += 1;
-            }
-            else
-            {
-                break;
-            }
-        }
-
-        return count >= target;
-    }
-
-    //check slash win /
-    private bool CheckDiagonal2(Board board, int row, int col, int playerId, int target)
-    {
-
-        int count = 1;
-
-        for (int i = row + 1, j = col - 1; i <= board.Size && j >= 1; i++, j--)
-        {
-
-            if (PlayerStone(board.GetCell(i, j), playerId))
-            {
-                count += 1;
-            }
-            else
-            {
-                break;
-            }
-        }
-
-        for (int i = row - 1, j = col + 1; i >= 1 && j <= board.Size; i--, j++)
-        {
-
-            if (PlayerStone(board.GetCell(i, j), playerId))
-            {
-                count += 1;
-            }
-            else
-            {
-                break;
-            }
-        }
-
-        return count >= target;
+        return count>= target;
     }
 }
 
@@ -271,7 +166,7 @@ public class DumbGomokuStrategy : IAiStrategy
                 {
                     if (board.GetCell(row, col) == 0)
                     {
-                        possibleMoves.Add(new Move(row, col, 'O', computer));
+                        possibleMoves.Add(new Move(row , col , 'O', computer));
                     }
                 }
             }
@@ -286,3 +181,4 @@ public class DumbGomokuStrategy : IAiStrategy
         throw new Exception("This only supports Gomoku");
     }
 }
+

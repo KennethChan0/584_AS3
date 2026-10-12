@@ -60,7 +60,7 @@ public class CommandParser
 
     }
 
-    // seperate dufferent command type by using enum
+    // seperate different command type by using enum
     public enum CommandType
     {
         Help,
