@@ -65,6 +65,7 @@ public class CommandParser
     {
         Help,
         Save,
+        Load,
         Redo,
         Undo,
         Quit,
@@ -83,6 +84,9 @@ public class CommandParser
 
             case "SAVE":
                 return CommandType.Save;
+            
+            case "LOAD":
+                return CommandType.Load;
 
             case "REDO":
                 return CommandType.Redo;

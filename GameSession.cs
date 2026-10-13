@@ -1,4 +1,5 @@
 using System.IO.Pipelines;
+using System.Runtime.CompilerServices;
 
 public class GameSession
 {
@@ -17,6 +18,7 @@ public class GameSession
 
     public GameSession(IGame game, string variant, string mode)// Constrcutor
     {
+        
         currentGame = game;
         helpSystem = new HelpSystem();
         saveLoad = new SaveLoad();
@@ -98,11 +100,7 @@ public class GameSession
         {
             word = input.Trim().Split(' ')[0];
             command = parser.CheckCommand(word);
-            if(word.ToLower() == LOAD_COMMAND)
-            {
-                LoadGame();
-            }
-            else if(command != CommandParser.CommandType.Other)
+            if(command != CommandParser.CommandType.Other)
             {
                 AddressCommand(command);
             }
@@ -124,9 +122,9 @@ public class GameSession
             case CommandParser.CommandType.Save:
                 SaveGame();
                 break;
-            // case CommandParser.CommandType.Load:
-            //     LoadGame();
-            //     break;
+            case CommandParser.CommandType.Load:
+                LoadGame();
+                break;
             case CommandParser.CommandType.Redo:
                 Redo();
                 break;

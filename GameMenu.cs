@@ -120,8 +120,8 @@ public class GameMenu
 
     private void LoadFromFile()
     {
-        string filename = Ask("Save file name: ");
-        GameSession? session = new SaveLoad().LoadGame(filename);
+
+        GameSession? session = new SaveLoad().LoadGame();
         if (session == null)
         {
             Console.WriteLine("  Load failed.");

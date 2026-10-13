@@ -19,23 +19,23 @@ public class SaveLoad
         bool saved = false;
         IGame game = session.GetGame();
         FileStream inFile;
-        StreamReader reader;
+        StreamWriter writer;
 
         try
         {
             inFile = new FileStream(FILENAME, FileMode.Create, FileAccess.Write);
-            reader = new StreamReader(inFile);
+            writer = new StreamWriter(inFile);
 
-            reader.WriteLine("VARIANT" + HEADER_DELIM + session.Variant);
-            reader.WriteLine("MODE" + HEADER_DELIM + session.Mode);
-            reader.WriteLine("TURN" + HEADER_DELIM + session.GetTurn());
-            reader.WriteLine("ACTIVE" + HEADER_DELIM + game.CurrentPlayer.Id);
-            reader.WriteLine(MOVES_MARK);
+            writer.WriteLine("VARIANT" + HEADER_DELIM + session.Variant);
+            writer.WriteLine("MODE" + HEADER_DELIM + session.Mode);
+            writer.WriteLine("TURN" + HEADER_DELIM + session.GetTurn());
+            writer.WriteLine("ACTIVE" + HEADER_DELIM + game.CurrentPlayer.Id);
+            writer.WriteLine(MOVES_MARK);
             foreach (Move move in session.GetMovesHistory())
             {
-                reader.WriteLine(move.Stone.ToString() + DELIM + move.Row + DELIM + move.Col + DELIM + move.player.Id);
+                writer.WriteLine(move.Stone.ToString() + DELIM + move.Row + DELIM + move.Col + DELIM + move.player.Id);
             }
-            reader.Close();
+            writer.Close();
             inFile.Close();
             saved = true;
         }
