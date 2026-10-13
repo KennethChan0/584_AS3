@@ -1,0 +1,5 @@
+C:\Users\bogy\IFN584\a3\584_AS3\obj\Debug\net10.0\assignment3_group7.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\bogy\IFN584\a3\584_AS3\obj\Debug\net10.0\assignment3_group7.AssemblyInfoInputs.cache
+C:\Users\bogy\IFN584\a3\584_AS3\obj\Debug\net10.0\assignment3_group7.AssemblyInfo.cs
+C:\Users\bogy\IFN584\a3\584_AS3\obj\Debug\net10.0\assignment3_group7.csproj.CoreCompileInputs.cache
+C:\Users\bogy\IFN584\a3\584_AS3\obj\Debug\net10.0\assignment3_group7.sourcelink.json

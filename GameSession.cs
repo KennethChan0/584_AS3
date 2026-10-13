@@ -153,7 +153,7 @@ public class GameSession
                 currentGame.UndoMove(move);
             }
             currentGame.CheckWin();
-            Console.WriteLine($"{currentGame.Winner} win.");
+            Console.WriteLine($"{currentGame.CurrentPlayer.Name} win.");
 
         }
     }
@@ -174,7 +174,7 @@ public class GameSession
                 currentGame.RedoMove(move);
             }
             currentGame.CheckWin();
-            Console.WriteLine($"{currentGame.Winner} win.");
+            Console.WriteLine($"{currentGame.CurrentPlayer.Name} win.");
         }
     }
 
@@ -188,7 +188,7 @@ public class GameSession
 
     private void LoadGame()
     {
-        GameSession load = saveLoad.LoadGame();
+        GameSession? load = saveLoad.LoadGame();
 
         if(load == null)
         {
@@ -236,7 +236,7 @@ public class GameSession
 
     public void GetResult()
     {
-        Player winner = currentGame.Winner;
+        Player? winner = currentGame.Winner;
 
         if(winner == null)
         {
@@ -244,7 +244,7 @@ public class GameSession
         }
         else
         {
-            Console.WriteLine($"{currentGame.Winner} win");
+            Console.WriteLine($"{winner.Name} win");
         }
     }
 
@@ -256,7 +256,7 @@ public class GameSession
 
         stopRunning = false;
 
-        while(!stopRunning && currentGame.IsOver)
+        while(!stopRunning && !currentGame.IsOver)
         {
             currentGame.DisplayBoard(GetViewer());//Get board
 

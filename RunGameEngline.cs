@@ -1,7 +1,7 @@
 ﻿
 using System.Runtime.CompilerServices;
 
-public class Program
+public class RunGameEngline
 {
     public static void Main(string[] args)
     {
