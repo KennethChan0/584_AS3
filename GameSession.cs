@@ -1,5 +1,3 @@
-using System.IO.Pipelines;
-using System.Runtime.CompilerServices;
 
 public class GameSession
 {
@@ -153,7 +151,7 @@ public class GameSession
                 currentGame.UndoMove(move);
             }
             currentGame.CheckWin();
-            Console.WriteLine($"{currentGame.CurrentPlayer.Name} win.");
+            Console.WriteLine($"{currentGame.CurrentPlayer.Name} turn.");
 
         }
     }
@@ -174,7 +172,7 @@ public class GameSession
                 currentGame.RedoMove(move);
             }
             currentGame.CheckWin();
-            Console.WriteLine($"{currentGame.CurrentPlayer.Name} win.");
+            Console.WriteLine($"{currentGame.CurrentPlayer.Name} turn.");
         }
     }
 
@@ -315,11 +313,13 @@ public class GameSession
                 move = ParseMove(commands[index], currentGame.CurrentPlayer);
                 if(move == null || !ApplyMove(move))
                 {
-                    Console.WriteLine($"Command{index + 1} 'PASS' is in invalid.");
+                    Console.WriteLine($"Command{index + 1} {commands[index].Trim()} is in invalid.");
                     failed = true;
                 }
             }
             index++;
+
+        }
 
         currentGame.DisplayBoard(GetViewer());
         Console.WriteLine("Active player:" + currentGame.CurrentPlayer.Name );
@@ -329,8 +329,8 @@ public class GameSession
                 GetResult();
             }
 
-        }
     }
+    
 
     public int CountStones(int playerId)
     {

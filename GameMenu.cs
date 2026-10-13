@@ -76,8 +76,8 @@ public class GameMenu
             switch (choice)
             {
                 case "1": return "HvH";
-                case "2": return "HvC DumbAI";
-                case "3": return "HvC SmartAI";
+                case "2": return "HvC Dumb";
+                case "3": return "HvC Smart";
                 default:
                     Console.WriteLine("Please enter 1, 2 or 3.");
                     break;
