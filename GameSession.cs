@@ -64,7 +64,7 @@ public class GameSession
     private Move GetNextMove()
     {
         Player player = currentGame.CurrentPlayer;
-        Move move = null;
+        Move? move = null;
 
         if(player is ComputerPlayer computer)
         {
@@ -82,7 +82,7 @@ public class GameSession
     {
         string? input;
         string word;
-        Move move = null;
+        Move? move = null;
         CommandParser.CommandType command;
 
         Console.WriteLine(player.Name);
@@ -206,7 +206,7 @@ public class GameSession
 
     private Move ParseMove(string input, Player player)
     {
-        Move move = null;
+        Move? move = null;
 
         try
         {
@@ -288,4 +288,67 @@ public class GameSession
 
 
     }
+    //For auto test enter commands
+    public void RunScriptForAuto(string script)
+    {
+        string[] commands = script.Split(',');
+        int index = 0;
+        bool failed = false;
+        Move? move;
+
+        while(!failed && !currentGame.IsOver && index < commands.Length)
+        {
+            if(commands[index].Trim().ToUpper() == "PASS")
+            {
+                if(currentGame.GetPossibleMove(currentGame.CurrentPlayer).Count > 0)
+                {
+                    Console.WriteLine($"Command{index + 1} 'PASS' is in invalid, still have legal move");
+                    failed = true;
+                }
+                else
+                {
+                    Console.WriteLine("PASS");
+                }
+            }
+            else
+            {
+                move = ParseMove(commands[index], currentGame.CurrentPlayer);
+                if(move == null || !ApplyMove(move))
+                {
+                    Console.WriteLine($"Command{index + 1} 'PASS' is in invalid.");
+                    failed = true;
+                }
+            }
+            index++;
+
+        currentGame.DisplayBoard(GetViewer());
+        Console.WriteLine("Active player:" + currentGame.CurrentPlayer.Name );
+        Console.WriteLine("Player 1: " + CountStones(1) + "Player2: " + CountStones(2));
+        if(currentGame.IsOver)
+            {
+                GetResult();
+            }
+
+        }
+    }
+
+    public int CountStones(int playerId)
+    {
+        int count = 0;
+        int value;
+
+        for(int row =1; row <= currentGame.Board.Rows; row++)
+        {
+            for(int col = 1; col <= currentGame.Board.Columns; col++)
+            {
+                value = currentGame.Board.GetCell(row, col);
+                if(value == playerId * 2 -1 || value == playerId *2)
+                {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
 }
+

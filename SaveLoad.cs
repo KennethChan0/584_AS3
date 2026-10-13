@@ -54,7 +54,7 @@ public class SaveLoad
 
         if (!File.Exists(FILENAME))
         {
-            Console.WriteLine("  ! File not found: " + FILENAME);
+            Console.WriteLine("File not found: " + FILENAME);
         }
         else
         {
@@ -65,12 +65,12 @@ public class SaveLoad
             }
             catch (SaveFileException e)
             {
-                Console.WriteLine("  ! " + e.Message);
+                Console.WriteLine(e.Message);
                 session = null;
             }
             catch (Exception e)
             {
-                Console.WriteLine("  ! Could not load the file: " + e.Message);
+                Console.WriteLine("Could not load the file: " + e.Message);
                 session = null;
             }
         }
@@ -179,7 +179,7 @@ public class SaveLoad
 
         if (session.GetTurn() != expectedTurn || game.CurrentPlayer.Id != expectedActive)
         {
-            throw new SaveFileException("The save file does not match the replayed game (corrupt file?).");
+            throw new SaveFileException("The save file does not match the replayed game.");
         }
         return session;
     }

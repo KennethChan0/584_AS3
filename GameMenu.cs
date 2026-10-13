@@ -1,5 +1,5 @@
 public class GameMenu
-{
+{   // Program call this to run the game
     public void Run()
     {
         while (true)
@@ -7,21 +7,21 @@ public class GameMenu
             DisplayMenu();
             string choice = Ask("Choose: ");
 
-            if (choice == "0")
+            if (choice == "0")//Exit the game
             {
                 Console.WriteLine("Goodbye!");
                 return;
             }
-            if (choice == "7")
+            if (choice == "7")//Load file
             {
                 LoadFromFile();
-                continue;
+                continue;//won't go through the rest of program
             }
 
-            string? variant = VariantFromChoice(choice);
+            string? variant = VariantChoice(choice);
             if (variant == null)
             {
-                Console.WriteLine("  ! Please enter a number from the menu.");
+                Console.WriteLine("Please enter a number from the menu.");
                 continue;
             }
 
@@ -34,26 +34,25 @@ public class GameMenu
             }
             catch (Exception e)
             {
-                Console.WriteLine($"  ! Could not create the game: {e.Message}");
+                Console.WriteLine($"Could not create the game: {e.Message}");
                 continue;
             }
-
-            session.RunSession();   // returns when the game ends or the player quits
+            session.RunSession();// returns when the game ends or the player quits
         }
     }
-
     private void DisplayMenu()
     {
-        Console.WriteLine();
-        Console.WriteLine("Gomoku & Reversi");
-        Console.WriteLine("  Gomoku:   1) Classic   2) Plus   3) Fog");
-        Console.WriteLine("  Reversi:  4) Standard  5) Anti   6) Corner");
-        Console.WriteLine("  7) Load a saved game");
-        Console.WriteLine("  0) Exit");
+        Console.WriteLine("Welcom to play Gomoku & Reversi!");
+        Console.WriteLine("Please enter the number(1,2,3...6) to choose the game which you want to play, \nor choose 7 to load the game, 0 to exit the game: ");
+        Console.WriteLine("Gomoku: (1) Classic (2) Plus (3) Fog");
+        Console.WriteLine("Reversi: (4) Standard (5) Anti (6) Corner");
+        Console.WriteLine(" (7) Load a saved game");
+        Console.WriteLine(" (0) Exit");
         Console.WriteLine();
     }
 
-    private string? VariantFromChoice(string choice)
+
+    private string? VariantChoice(string choice)
     {
         switch (choice)
         {
@@ -71,19 +70,29 @@ public class GameMenu
     {
         while (true)
         {
-            Console.WriteLine("Mode:  1) Human vs Human   2) Human vs Computer (Dumb)   3) Human vs Computer (Smart)");
+            Console.WriteLine("Mode: (1) Human vs Human (2) Human vs Computer (DumbAI) (3) Human vs Computer (SmartAI)");
             string choice = Ask("Choose: ");
 
             switch (choice)
             {
                 case "1": return "HvH";
-                case "2": return "HvC Dumb";
-                case "3": return "HvC Smart";
+                case "2": return "HvC DumbAI";
+                case "3": return "HvC SmartAI";
                 default:
-                    Console.WriteLine("  ! Please enter 1, 2 or 3.");
+                    Console.WriteLine("Please enter 1, 2 or 3.");
                     break;
             }
         }
+    }
+    private string Ask(string prompt)
+    {
+        Console.Write(prompt);
+        string? line = Console.ReadLine();
+        if (line == null)
+        {
+            Environment.Exit(0);   // input stream closed: avoid looping forever
+        }
+        return line.Trim();
     }
 
     private GameSession BuildSession(string variant, string mode)
@@ -124,21 +133,11 @@ public class GameMenu
         GameSession? session = new SaveLoad().LoadGame();
         if (session == null)
         {
-            Console.WriteLine("  Load failed.");
+            Console.WriteLine("Load failed.");
             return;
         }
-        Console.WriteLine("  Game loaded.");
+        Console.WriteLine("Game loaded.");
         session.RunSession();
     }
 
-    private string Ask(string prompt)
-    {
-        Console.Write(prompt);
-        string? line = Console.ReadLine();
-        if (line == null)
-        {
-            Environment.Exit(0);   // input stream closed: avoid looping forever
-        }
-        return line.Trim();
-    }
 }
