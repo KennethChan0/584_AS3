@@ -59,7 +59,7 @@ public class GameSession
         }
         return viewer;
     }
-    private Move GetNextMove()
+    private Move? GetNextMove()
     {
         Player player = currentGame.CurrentPlayer;
         Move? move = null;
@@ -76,7 +76,7 @@ public class GameSession
         }
         return move;
     }
-    private Move HumanMove(Player player)
+    private Move? HumanMove(Player player)
     {
         string? input;
         string word;
@@ -202,7 +202,7 @@ public class GameSession
         }
     }
 
-    private Move ParseMove(string input, Player player)
+    private Move? ParseMove(string input, Player player)
     {
         Move? move = null;
 
@@ -249,7 +249,7 @@ public class GameSession
 
     public void RunSession()
     {
-        Move move;
+        Move? move;
         bool isRightMove;
 
         stopRunning = false;
