@@ -1,7 +1,3 @@
-
-using System;
-using System.Collections.Generic;
-
 public class Fog : Gomoku
 {
     public override string Name => "GomokuFog";

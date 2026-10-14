@@ -1,5 +1,3 @@
-using System.Numerics;
-
 public class History
 {
     private List<Move> movesHistory = new List<Move>();
@@ -16,8 +14,6 @@ public class History
     // check move/redo history is possible
     public bool CanUndo() => movesHistory.Count >= 2;
     public bool CanRedo() => redoHistory.Count >= 2;
-
-
 
     public List<Move> Undo()
     {
@@ -50,6 +46,7 @@ public class History
         return undo;
 
     }
+
     //mirror undo
     public List<Move> Redo()
     {
@@ -70,7 +67,6 @@ public class History
             movesHistory.Add(newerMoves);
             redo.Add(olderMoves);
             redo.Add(newerMoves);
-
         }
         return redo;
     }

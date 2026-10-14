@@ -1,7 +1,3 @@
-
-using System;
-using System.Collections.Generic;
-
 public class Plus : Gomoku
 {
     public override string Name => "GomokuPlus";

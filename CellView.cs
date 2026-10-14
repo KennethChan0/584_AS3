@@ -1,4 +1,3 @@
-
 public class CellView
 {
     // Whether this cell is visible to the player //Encapsulation of the cell's visibility state, allowing controlled access to whether the cell is visible to the player
@@ -40,7 +39,7 @@ public class CellView
         // Fog only uses ordinary stones
         return Value switch
         {
-            0 => '.',  // Empty cell
+            0 => ' ',  // Empty cell
             1 => 'X',  // Player 1 Ordinary Stone
             3 => 'O',  // Player 2 Ordinary Stone
             _ => '?'   // Unknown or unsupported value

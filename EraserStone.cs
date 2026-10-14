@@ -1,4 +1,3 @@
-
 public class EraserStone : Stone
 {
     // Constructor: identify the owner of the eraser

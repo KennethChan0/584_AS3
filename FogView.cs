@@ -1,6 +1,3 @@
-
-using System;
-
 public class FogView : IObserver // Represents a player's filtered view of the board, showing only visible cells
 {
     // The player who owns this filtered view

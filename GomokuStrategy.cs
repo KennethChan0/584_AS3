@@ -1,5 +1,3 @@
-using System.Reflection.Metadata;
-
 public class SmartGomokuStrategy : IAiStrategy
 {
     public Move ChooseMove(IGame game)
@@ -20,7 +18,6 @@ public class SmartGomokuStrategy : IAiStrategy
             {
                 opponentId = 1;
             }
-
 
             // Find out my possible 5-in-row, 4-in-row, 3-in-roow... and line up
             for (int target = 5; target >= 2; target--)
@@ -77,8 +74,6 @@ public class SmartGomokuStrategy : IAiStrategy
         }
         throw new Exception("This only supports Gomoku");
     }
-
-
 
     //Matching cell values with player and return cell contents
     private bool PlayerStone(int playerCellValue, int playerId)
@@ -180,4 +175,3 @@ public class DumbGomokuStrategy : IAiStrategy
         throw new Exception("This only supports Gomoku");
     }
 }
-

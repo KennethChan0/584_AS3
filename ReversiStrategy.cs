@@ -55,7 +55,5 @@ public class SmartReversiStrategy : IAiStrategy
             return bestMove;
         }
         throw new Exception("This only supports Reversi");
-
-
     }
 }

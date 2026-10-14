@@ -1,17 +1,11 @@
-using System;
-using System.Collections.Generic;
-
 public abstract class Gomoku : IGame
 {
     public Board Board { get; protected set; }
     public List<Player> Players { get; protected set; }
-
     public abstract string Name { get; }
-
     public Player CurrentPlayer { get; protected set; }
     public bool IsOver { get; protected set; }
     public Player? Winner { get; protected set; }
-
     protected Move? LastMove { get; set; }
 
     protected Gomoku(Board board, List<Player> players)
@@ -56,7 +50,6 @@ public abstract class Gomoku : IGame
         LastMove = null;
     }
 
-
     // Template Method: shared turn sequence //The parent class defines a fixed sequence of steps, while subclasses implement their own rules
     public bool Play(Move move)
     {
@@ -91,7 +84,6 @@ public abstract class Gomoku : IGame
 
         return true;
     }
-
 
     // 'O' means ordinary stone here, not Player 2's display symbol.
     // 'H' means heavy stone.
@@ -134,10 +126,10 @@ public abstract class Gomoku : IGame
 
     protected bool IsWithinBounds(int row, int col)
     {
-    return row >= 1 &&
-           row <= Board.Rows &&
-           col >= 1 &&
-           col <= Board.Columns;
+        return row >= 1 &&
+            row <= Board.Rows &&
+            col >= 1 &&
+            col <= Board.Columns;
     }
 
     public abstract bool ValidateMove(Move move);

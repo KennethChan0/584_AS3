@@ -1,5 +1,3 @@
-using System.Security;
-
 public class CommandParser
 {
     // Parse and Call CheckValid to Check Correct syntax of Move Command 
@@ -57,7 +55,6 @@ public class CommandParser
         {
             throw new Exception($"The valid number of row and column must be between 1 and {boardSize} ");
         }
-
     }
 
     // seperate different command type by using enum
@@ -99,11 +96,10 @@ public class CommandParser
 
             default:
                 return CommandType.Other;
-
         }
     }
 
-// automatically testing parse and return a move list 
+    // automatically testing parse and return a move list 
     public List<Move> ParseTestingCommand(string playerInput, Player player1,Player player2, int boardSize)
     {   
         List<Move> allMoves = new List<Move>();
@@ -121,9 +117,7 @@ public class CommandParser
             {
                 currentPlayer= player1;
             }
-            
         }
         return allMoves;
     }
-
 }

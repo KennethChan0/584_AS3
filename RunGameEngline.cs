@@ -1,7 +1,4 @@
-﻿
-using System.Runtime.CompilerServices;
-
-public class RunGameEngline
+﻿public class RunGameEngline
 {
     public static void Main(string[] args)
     {
@@ -14,7 +11,6 @@ public class RunGameEngline
             AutoTestMode(args);
         }
     }
-
 
     private static void AutoTestMode(string[] args)
     {

@@ -1,4 +1,3 @@
-
 public abstract class Stone
 {
     // The player who owns this stone //property record the stone who belomgs to which player

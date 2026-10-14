@@ -1,6 +1,3 @@
-using System.Reflection.Metadata;
-using System.Runtime.CompilerServices;
-
 public abstract class Player
 {
     public int Id { get; }
@@ -10,7 +7,6 @@ public abstract class Player
         Name = name;
         Id = id;
     }
-
 }
 
 public class ComputerPlayer : Player
@@ -30,7 +26,5 @@ public class HumanPlayer:Player
 {
     public HumanPlayer(string name,int id) : base(name,id)
     {
-        
     }
 }
-

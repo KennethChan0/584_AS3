@@ -2,10 +2,8 @@ public class SaveFileException : Exception
 {
     public SaveFileException(string message): base(message)
     {
-        
     }
 }
-
 
 public class SaveLoad
 {
@@ -45,7 +43,6 @@ public class SaveLoad
         }
         return saved;
     }
-
 
     public GameSession? LoadGame()
     {
@@ -228,6 +225,3 @@ public class SaveLoad
         return number;
     }
 }
-    
-
-
