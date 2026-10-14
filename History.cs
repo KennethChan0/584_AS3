@@ -1,27 +1,39 @@
 public class History
 {
-    private List<Move> movesHistory = new List<Move>();
-    private List<Move> redoHistory = new List<Move>();
+    private List<ICommand> movesHistory = new List<ICommand>();
+    private List<ICommand> redoHistory = new List<ICommand>();
 
-    public List<Move> GetMovesHistory() => new List<Move>(movesHistory);
-    public List<Move> GetRedoHistory() => new List<Move>(redoHistory);
-
-    public void AddMove(Move move)
+    public List<Move> GetMovesHistory()
     {
-        movesHistory.Add(move);
+        List<Move> moveList = new();
+        foreach(ICommand command in movesHistory)
+            moveList.Add(command.Move);
+        return moveList;
+    }
+
+    public List<Move> GetRedoHistory()
+    {
+        List<Move> redoMoveList = new();
+        foreach(ICommand command in redoHistory)
+            redoMoveList.Add(command.Move);
+        return redoMoveList;
+    }
+    public void AddCommand(ICommand command)
+    {
+        movesHistory.Add(command);
         redoHistory.Clear();
     }
     // check move/redo history is possible
     public bool CanUndo() => movesHistory.Count >= 2;
     public bool CanRedo() => redoHistory.Count >= 2;
 
-    public List<Move> Undo()
+    public List<ICommand> Undo()
     {
-        List<Move> undo = new List<Move>();
+        List<ICommand> undo = new List<ICommand>();
         int lastIndex;
         int lastSecondIndex;
-        Move olderMoves;
-        Move newerMoves;
+        ICommand olderMoves;
+        ICommand newerMoves;
 
         /* movesHistory: m1 m2 m3 m4 m5 m6
                  movesHistory    redoHistory     return
@@ -48,13 +60,13 @@ public class History
     }
 
     //mirror undo
-    public List<Move> Redo()
+    public List<ICommand> Redo()
     {
-        List<Move> redo = new List<Move>();
+        List<ICommand> redo = new List<ICommand>();
         int lastIndex;
         int lastSecondIndex;
-        Move olderMoves;
-        Move newerMoves;
+        ICommand olderMoves;
+        ICommand newerMoves;
 
         if(CanRedo())
         {

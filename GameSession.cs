@@ -133,7 +133,7 @@ public class GameSession
 
     private void Undo()
     {
-        List<Move> undo;
+        List<ICommand> undo;
 
         if(!history.CanUndo())
         {
@@ -142,9 +142,9 @@ public class GameSession
         else
         {
             undo = history.Undo();
-            foreach(Move move in undo)
+            foreach(ICommand command in undo)
             {
-                currentGame.UndoMove(move);
+                command.Undo();
             }
             currentGame.CheckWin();
             Console.WriteLine($"{currentGame.CurrentPlayer.Name} turn.");
@@ -153,7 +153,7 @@ public class GameSession
 
     private void Redo()
     {
-        List<Move> redo;
+        List<ICommand> redo;
 
         if(!history.CanRedo())
         {
@@ -162,9 +162,9 @@ public class GameSession
         else
         {
             redo = history.Redo();
-            foreach (Move move in redo)
+            foreach (ICommand command in redo)
             {
-                currentGame.RedoMove(move);
+                command.Execute();
             }
             currentGame.CheckWin();
             Console.WriteLine($"{currentGame.CurrentPlayer.Name} turn.");
@@ -214,15 +214,15 @@ public class GameSession
 
     public bool ApplyMove(Move move)// Save and load need to use this to get data
     {
-        bool isRightMove;
-        
-        isRightMove = currentGame.Play(move);
+        ICommand command = new MoveCommand(currentGame,move);
 
-        if(isRightMove)
+        if (!command.Execute())
         {
-            history.AddMove(move);
+            return false;
         }
-        return isRightMove;
+
+        history.AddCommand(command);
+        return true;
     }
 
     public void GetResult()
