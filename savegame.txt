@@ -1,0 +1,7 @@
+VARIANT=plus
+MODE=HvC Smart
+TURN=2
+ACTIVE=1
+MOVES
+O,5,5,1
+O,4,4,2
