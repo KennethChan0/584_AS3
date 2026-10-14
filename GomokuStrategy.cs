@@ -121,7 +121,6 @@ public class SmartGomokuStrategy : IAiStrategy
         return false;
     }
 
-    //check horizontal win
     private int CountStones(Board board, int row, int col,int rowDirection, int colDirection, int playerId)
     {
         int count = 0;
