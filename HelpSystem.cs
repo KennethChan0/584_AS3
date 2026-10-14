@@ -3,6 +3,7 @@ public class HelpSystem
     public void DisplayHelp(IGame game)
     {
         PrintGameHeader(game);
+        Console.WriteLine("");
         Console.WriteLine(game.GetGameInfo());// variant rules, win condition, pass rule, pieces
         CommandSyntax();
     }
@@ -18,13 +19,13 @@ public class HelpSystem
 
     private void CommandSyntax()
     {
-        Console.WriteLine("Commands(Type one command on your turn):");
+        Console.WriteLine("\nCommands(Type one command on your turn):");
         Console.WriteLine("How to make a move: Gomoku O3:4 (H3:4 / E3:4 in Plus), Reversi P3:4");
-        Console.WriteLine("undo: revert the previous full turn (both players' moves)");
-        Console.WriteLine("redo: replay the turn you just undid");
-        Console.WriteLine("save: enter save to save game");
-        Console.WriteLine("load: enter load to load game");
-        Console.WriteLine("help: show this screen");
-        Console.WriteLine("quit: leave the game");
+        Console.WriteLine("undo: Revert the previous full turn (both players' moves)");
+        Console.WriteLine("redo: Replay the turn you just undid");
+        Console.WriteLine("save: Enter save to save game");
+        Console.WriteLine("load: Enter load to load game");
+        Console.WriteLine("help: Show this screen");
+        Console.WriteLine("quit: Leave the game");
     }
 }

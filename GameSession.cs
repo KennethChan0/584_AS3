@@ -61,6 +61,7 @@ public class GameSession
 
         if(player is ComputerPlayer computer)
         {
+            Console.WriteLine("");
             Console.WriteLine(computer.Name + "is thinking...");
             move = computer.GetMove(currentGame);
         }
@@ -135,7 +136,7 @@ public class GameSession
 
         if(!history.CanUndo())
         {
-            Console.WriteLine("Nothing can undo");
+            Console.WriteLine("You cannot undo anymore");
         }
         else
         {
@@ -155,7 +156,7 @@ public class GameSession
 
         if(!history.CanRedo())
         {
-            Console.WriteLine("Nothing can redo");
+            Console.WriteLine("You cannot redo anymore");
         }
         else
         {

@@ -43,12 +43,17 @@ public class GameMenu
 
     private void DisplayMenu()
     {
-        Console.WriteLine("Welcome to play Gomoku & Reversi!");
-        Console.WriteLine("Please enter the number(1,2,3...6) to choose the game which you want to play, \nor choose 7 to load the game, 0 to exit the game: ");
-        Console.WriteLine("Gomoku: (1) Classic (2) Plus (3) Fog");
-        Console.WriteLine("Reversi: (4) Standard (5) Anti (6) Corner");
-        Console.WriteLine(" (7) Load a saved game");
-        Console.WriteLine(" (0) Exit");
+        Console.WriteLine("\nWelcome to play Gomoku & Reversi!");
+        Console.WriteLine("Please enter 0 - 7 to select the game ");
+        Console.WriteLine("\n1: Gomoku Classic");
+        Console.WriteLine("2: Gomoku Plus");
+        Console.WriteLine("3: Gomoku Fog");
+
+        Console.WriteLine("4: Reversi Standard");
+        Console.WriteLine("5: Reversi Anti");
+        Console.WriteLine("6: Reversi Corner");
+        Console.WriteLine("7: Load a saved game");
+        Console.WriteLine("0: Exit");
         Console.WriteLine();
     }
 
@@ -70,8 +75,9 @@ public class GameMenu
     {
         while (true)
         {
-            Console.WriteLine("Mode: (1) Human vs Human (2) Human vs Computer (DumbAI) (3) Human vs Computer (SmartAI)");
-            string choice = Ask("Choose: ");
+            Console.WriteLine("\nMode: \n1: Human vs Human \n2: Human vs Computer (DumbAI) \n3: Human vs Computer (SmartAI)");
+            string choice = Ask("\nChoose: ");
+            Console.WriteLine("");
 
             switch (choice)
             {
