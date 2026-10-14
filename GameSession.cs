@@ -62,7 +62,7 @@ public class GameSession
         if(player is ComputerPlayer computer)
         {
             Console.WriteLine("");
-            Console.WriteLine(computer.Name + "is thinking...");
+            Console.WriteLine(computer.Name + " is thinking...");
             move = computer.GetMove(currentGame);
         }
         else
@@ -290,26 +290,11 @@ public class GameSession
 
         while(!failed && !currentGame.IsOver && index < commands.Length)
         {
-            if(commands[index].Trim().ToUpper() == "PASS")
+            move = ParseMove(commands[index], currentGame.CurrentPlayer);
+            if(move == null || !ApplyMove(move))
             {
-                if(currentGame.GetPossibleMove(currentGame.CurrentPlayer).Count > 0)
-                {
-                    Console.WriteLine($"Command{index + 1} 'PASS' is in invalid, still have legal move");
-                    failed = true;
-                }
-                else
-                {
-                    Console.WriteLine("PASS");
-                }
-            }
-            else
-            {
-                move = ParseMove(commands[index], currentGame.CurrentPlayer);
-                if(move == null || !ApplyMove(move))
-                {
-                    Console.WriteLine($"Command{index + 1} {commands[index].Trim()} is in invalid.");
-                    failed = true;
-                }
+                Console.WriteLine($"Command{index + 1} {commands[index].Trim()} is invalid.");
+                failed = true;
             }
             index++;
         }

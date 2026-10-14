@@ -4,7 +4,7 @@ public class HelpSystem
     {
         PrintGameHeader(game);
         Console.WriteLine("");
-        Console.WriteLine(game.GetGameInfo());// variant rules, win condition, pass rule, pieces
+        Console.WriteLine(game.GetGameInfo());// variant rules, win condition, pieces
         CommandSyntax();
     }
 

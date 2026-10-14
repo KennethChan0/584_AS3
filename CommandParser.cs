@@ -98,26 +98,4 @@ public class CommandParser
                 return CommandType.Other;
         }
     }
-
-    // automatically testing parse and return a move list 
-    public List<Move> ParseTestingCommand(string playerInput, Player player1,Player player2, int boardSize)
-    {   
-        List<Move> allMoves = new List<Move>();
-        string[] commands = playerInput.Split(",");
-        Player currentPlayer = player1;
-
-        foreach (string command in commands)
-        {   
-            allMoves.Add(ParseCommand(command, currentPlayer, boardSize));
-            if (currentPlayer== player1)
-            {
-                currentPlayer = player2;
-            }
-            else
-            {
-                currentPlayer= player1;
-            }
-        }
-        return allMoves;
-    }
 }
