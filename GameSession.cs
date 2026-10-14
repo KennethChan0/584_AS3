@@ -78,6 +78,7 @@ public class GameSession
         Move? move = null;
         CommandParser.CommandType command;
 
+        Console.WriteLine();
         Console.WriteLine(player.Name);
         input = Console.ReadLine();
 
@@ -248,6 +249,11 @@ public class GameSession
         while(!stopRunning && !currentGame.IsOver)
         {
             currentGame.DisplayBoard(GetViewer());//Get board
+            
+            if (currentGame is Reversi)
+            {
+                Console.WriteLine("Player 1: " + CountStones(1) + ", Player2: " + CountStones(2));
+            }
 
             move = GetNextMove();
             if(move != null)
@@ -309,9 +315,16 @@ public class GameSession
         }
 
         currentGame.DisplayBoard(GetViewer());
-        Console.WriteLine("Active player:" + currentGame.CurrentPlayer.Name );
-        Console.WriteLine("Player 1: " + CountStones(1) + "Player2: " + CountStones(2));
-        if(currentGame.IsOver)
+        if (currentGame is Reversi)
+        {
+            Console.WriteLine("Player 1: " + CountStones(1) + ", Player2: " + CountStones(2));
+        }
+
+        if (!currentGame.IsOver)
+        {
+            Console.WriteLine("Active player: " + currentGame.CurrentPlayer.Name);
+        }
+        else
         {
             GetResult();
         }
