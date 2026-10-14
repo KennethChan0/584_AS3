@@ -1,7 +1,5 @@
-
 public class GameSession
 {
-
     private IGame currentGame; // IGame has board & player
     private HelpSystem helpSystem;
     private SaveLoad saveLoad;
@@ -9,14 +7,12 @@ public class GameSession
     private CommandParser parser;
     private bool stopRunning;
 
-
     // For save and load to use
     public string Variant{get; private set;}
     public string Mode{get; private set;}
 
     public GameSession(IGame game, string variant, string mode)// Constrcutor
     {
-        
         currentGame = game;
         helpSystem = new HelpSystem();
         saveLoad = new SaveLoad();
@@ -25,7 +21,6 @@ public class GameSession
         stopRunning = false;
         Variant = variant;
         Mode = mode;
-
     }
     
     public IGame GetGame()
@@ -37,11 +32,11 @@ public class GameSession
     {
         return history.GetMovesHistory();
     }
+
     public int GetTurn()
     {
         return history.GetMovesHistory().Count;
     }
-
 
     public Player GetViewer()
     {
@@ -59,6 +54,7 @@ public class GameSession
         }
         return viewer;
     }
+
     private Move GetNextMove()
     {
         Player player = currentGame.CurrentPlayer;
@@ -68,7 +64,6 @@ public class GameSession
         {
             Console.WriteLine(computer.Name + "is thinking...");
             move = computer.GetMove(currentGame);
-
         }
         else
         {
@@ -76,6 +71,7 @@ public class GameSession
         }
         return move;
     }
+
     private Move HumanMove(Player player)
     {
         string? input;
@@ -141,7 +137,7 @@ public class GameSession
 
         if(!history.CanUndo())
         {
-            Console.WriteLine("Noting can undo");
+            Console.WriteLine("Notging can undo");
         }
         else
         {
@@ -152,7 +148,6 @@ public class GameSession
             }
             currentGame.CheckWin();
             Console.WriteLine($"{currentGame.CurrentPlayer.Name} turn.");
-
         }
     }
 
@@ -162,7 +157,7 @@ public class GameSession
 
         if(!history.CanRedo())
         {
-            Console.WriteLine("Noting can redo");
+            Console.WriteLine("Nothing can redo");
         }
         else
         {
@@ -215,7 +210,6 @@ public class GameSession
             Console.WriteLine(e.Message);
         }
         return move;
-
     }
 
     public bool ApplyMove(Move move)// Save and load need to use this to get data
@@ -231,7 +225,6 @@ public class GameSession
         return isRightMove;
     }
 
-
     public void GetResult()
     {
         Player? winner = currentGame.Winner;
@@ -245,7 +238,6 @@ public class GameSession
             Console.WriteLine($"{winner.Name} win");
         }
     }
-
 
     public void RunSession()
     {
@@ -268,7 +260,6 @@ public class GameSession
                     {
                         Console.WriteLine("Computer player placed an illegal move.");
                         stopRunning = true;
-                
                     }
                     else
                     {
@@ -276,16 +267,14 @@ public class GameSession
                     }
                 }
             }
-        if(currentGame.IsOver)
-        {
-            currentGame.DisplayBoard(GetViewer());
-            GetResult();
+            if(currentGame.IsOver)
+            {
+                currentGame.DisplayBoard(GetViewer());
+                GetResult();
+            }
         }
-            
-        }
-
-
     }
+
     //For auto test enter commands
     public void RunScriptForAuto(string script)
     {
@@ -318,19 +307,16 @@ public class GameSession
                 }
             }
             index++;
-
         }
 
         currentGame.DisplayBoard(GetViewer());
         Console.WriteLine("Active player:" + currentGame.CurrentPlayer.Name );
         Console.WriteLine("Player 1: " + CountStones(1) + "Player2: " + CountStones(2));
         if(currentGame.IsOver)
-            {
-                GetResult();
-            }
-
+        {
+            GetResult();
+        }
     }
-    
 
     public int CountStones(int playerId)
     {
@@ -351,4 +337,3 @@ public class GameSession
         return count;
     }
 }
-

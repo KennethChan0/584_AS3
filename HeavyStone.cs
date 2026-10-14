@@ -28,13 +28,13 @@ public class HeavyStone : Stone //Inherits from Stone class, represents a heavy 
     // Convert the heavy stone into a board cell value
     public int GetBoardValue()
     {
-    if (PlayerId == 1)
-    {
-        return 2;
-    }
-    else
-    {
-        return 4;
-    }
+        if (PlayerId == 1)
+        {
+            return 2;
+        }
+        else
+        {
+            return 4;
+        }
     }
 }

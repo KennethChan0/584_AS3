@@ -1,6 +1,3 @@
-
-using System;
-
 public class PlayerBoardView
 {
     // Store the filtered view of each cell
@@ -41,7 +38,6 @@ public class PlayerBoardView
             throw new ArgumentOutOfRangeException(
                 nameof(row), "Position is outside the board.");
         }
-
         return cells[row - 1, col - 1];
     }
 
@@ -110,24 +106,35 @@ public class PlayerBoardView
     // Display the filtered board
     public void Display()
     {
-        Console.Write("   ");
-
+        Console.Write("  ");
         for (int col = 1; col <= Columns; col++)
         {
-            Console.Write($"{col,3}");
+            Console.Write($"{col, 4}");
         }
+        Console.WriteLine();
 
+        Console.Write("   +");
+        for (int col = 1; col <= Columns; col++)
+        {
+            Console.Write("---+");
+        }
         Console.WriteLine();
 
         for (int row = 1; row <= Rows; row++)
         {
-            Console.Write($"{row,3}");
+            Console.Write($"{row, 2} |");
 
             for (int col = 1; col <= Columns; col++)
             {
-                Console.Write($"{GetCell(row, col).GetSymbol(),3}");
+                Console.Write($" {GetCell(row, col).GetSymbol()} |");
             }
+            Console.WriteLine();
 
+            Console.Write("   +");
+            for (int col = 1; col <= Columns; col++)
+            {
+                Console.Write("---+");
+            }
             Console.WriteLine();
         }
     }

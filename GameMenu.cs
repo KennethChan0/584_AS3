@@ -40,9 +40,10 @@ public class GameMenu
             session.RunSession();// returns when the game ends or the player quits
         }
     }
+
     private void DisplayMenu()
     {
-        Console.WriteLine("Welcom to play Gomoku & Reversi!");
+        Console.WriteLine("Welcome to play Gomoku & Reversi!");
         Console.WriteLine("Please enter the number(1,2,3...6) to choose the game which you want to play, \nor choose 7 to load the game, 0 to exit the game: ");
         Console.WriteLine("Gomoku: (1) Classic (2) Plus (3) Fog");
         Console.WriteLine("Reversi: (4) Standard (5) Anti (6) Corner");
@@ -50,7 +51,6 @@ public class GameMenu
         Console.WriteLine(" (0) Exit");
         Console.WriteLine();
     }
-
 
     private string? VariantChoice(string choice)
     {
@@ -84,6 +84,7 @@ public class GameMenu
             }
         }
     }
+
     private string Ask(string prompt)
     {
         Console.Write(prompt);
@@ -129,7 +130,6 @@ public class GameMenu
 
     private void LoadFromFile()
     {
-
         GameSession? session = new SaveLoad().LoadGame();
         if (session == null)
         {
@@ -139,5 +139,4 @@ public class GameMenu
         Console.WriteLine("Game loaded.");
         session.RunSession();
     }
-
 }

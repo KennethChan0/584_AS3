@@ -1,7 +1,3 @@
-
-using System;
-using System.Collections.Generic;
-
 public class Classic : Gomoku
 {
     public override string Name => "Classic Gomoku";

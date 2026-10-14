@@ -1,4 +1,3 @@
-
 public class NormalBoard : Board
 {
     // Store all cells in a two-dimensional array
@@ -66,36 +65,47 @@ public class NormalBoard : Board
     // Display the complete board
     public override void Display()
     {
-        Console.Write("   ");
-
+        Console.Write("  ");
         for (int col = 1; col <= Columns; col++)
         {
-            Console.Write($"{col,3}");
+            Console.Write($"{col, 4}");
         }
+        Console.WriteLine();
 
+        Console.Write("   +");
+        for (int col = 1; col <= Columns; col++)
+        {
+            Console.Write("---+");
+        }
         Console.WriteLine();
 
         for (int row = 1; row <= Rows; row++)
         {
-            Console.Write($"{row,3}");
+            Console.Write($"{row, 2} |");
 
             for (int col = 1; col <= Columns; col++)
             {
                 int value = GetCell(row, col);
 
-            char symbol = value switch
-            {
-                0 => '.',  // Empty
-                1 => 'X',  // Player 1 Ordinary
-                2 => '#',  // Player 1 Heavy
-                3 => 'O',  // Player 2 Ordinary
-                4 => '@',  // Player 2 Heavy
-                _ => '?'   // Unexpected value
-            };
+                char symbol = value switch
+                {
+                    0 => ' ',  // Empty
+                    1 => 'X',  // Player 1 Ordinary
+                    2 => '#',  // Player 1 Heavy
+                    3 => 'O',  // Player 2 Ordinary
+                    4 => '@',  // Player 2 Heavy
+                    _ => '?'   // Unexpected value
+                };
 
-                Console.Write($"{symbol,3}");
+                Console.Write($" {symbol} |");
             }
+            Console.WriteLine();
 
+            Console.Write("   +");
+            for (int col = 1; col <= Columns; col++)
+            {
+                Console.Write("---+");
+            }
             Console.WriteLine();
         }
     }
