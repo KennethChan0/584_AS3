@@ -1,3 +1,5 @@
+using Microsoft.Win32.SafeHandles;
+
 public class GameSession
 {
     private IGame currentGame; // IGame has board & player
@@ -146,7 +148,8 @@ public class GameSession
             {
                 command.Undo();
             }
-            currentGame.CheckWin();
+            //it seems like this line is redudant beacuase game.UndoMove() set IsOVer to false and clean Winner
+            //currentGame.CheckWin();
             Console.WriteLine($"{currentGame.CurrentPlayer.Name} turn.");
         }
     }
@@ -166,7 +169,8 @@ public class GameSession
             {
                 command.Execute();
             }
-            currentGame.CheckWin();
+            // same with above
+            //currentGame.CheckWin();
             Console.WriteLine($"{currentGame.CurrentPlayer.Name} turn.");
         }
     }
